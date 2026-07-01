@@ -12,7 +12,7 @@ export default function NavBar({ active, onChange }) {
   return (
     <div style={{
       position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
-      background: 'rgba(13,13,13,0.9)',
+      background: 'rgba(10,10,10,0.92)',
       backdropFilter: 'blur(24px) saturate(1.6)',
       WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
       borderTop: '1px solid var(--border)',

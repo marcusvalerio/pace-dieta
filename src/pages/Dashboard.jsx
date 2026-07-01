@@ -24,13 +24,13 @@ function WeightChart({ weights }) {
     <svg viewBox={`0 0 ${W} ${H}`} width="100%">
       <defs>
         <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#00B4D8" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#00B4D8" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
         </linearGradient>
       </defs>
       <polygon points={area} fill="url(#wg)" />
-      <polyline points={pts} fill="none" stroke="#00B4D8" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
-      {sorted.map((w, i) => <circle key={i} cx={x(i)} cy={y(w.val)} r="3" fill="#00B4D8" />)}
+      <polyline points={pts} fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+      {sorted.map((w, i) => <circle key={i} cx={x(i)} cy={y(w.val)} r="3" fill="var(--accent)" />)}
     </svg>
   )
 }
@@ -59,19 +59,25 @@ export default function Dashboard({ plano, dietaPct }) {
   return (
     <div style={{ padding: '0 20px 100px' }}>
       <div style={{ padding: '20px 0 4px' }}>
-        <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.1em' }}>OLÁ, {usuario.nome?.toUpperCase()}</p>
-        <h2 style={{ fontSize: 28, fontWeight: 300, marginTop: 6 }}>Seu progresso.</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.15em' }}>OLÁ, {usuario.nome?.toUpperCase()}</p>
+          <div style={{ width: 12, height: 1, background: 'var(--border2)', transform: 'skewX(-20deg)' }} />
+          <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.1em' }}>
+            {new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()}
+          </p>
+        </div>
+        <h2 style={{ fontSize: 28, fontWeight: 600, marginTop: 6 }}>Seu progresso.</h2>
       </div>
 
       {/* Stats grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 24, marginBottom: 12 }}>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>DIETA HOJE</p>
-          <p style={{ fontSize: 24, fontFamily: 'Fraunces, serif', color: 'var(--accent)' }}>{dietaPct}%</p>
+          <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)' }}>{dietaPct}%</p>
         </div>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>PESO ATUAL</p>
-          <p style={{ fontSize: 24, fontFamily: 'Fraunces, serif' }}>{latest ? `${latest.val}kg` : '—'}</p>
+          <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif' }}>{latest ? `${latest.val}kg` : '—'}</p>
           {diff !== null && (
             <p className="mono" style={{ fontSize: 10, marginTop: 3, color: parseFloat(diff) <= 0 ? '#4ade80' : '#f87171', display: 'flex', alignItems: 'center', gap: 3 }}>
               {parseFloat(diff) <= 0 ? <TrendingDown size={11} /> : <TrendingUp size={11} />}
@@ -89,15 +95,15 @@ export default function Dashboard({ plano, dietaPct }) {
 
       {/* Projeção */}
       {projecao.peso_estimado && (
-        <div style={{ border: '1px solid rgba(0,180,216,0.25)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'rgba(0,180,216,0.04)' }}>
+        <div style={{ border: '1px solid rgba(196,30,45,0.25)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'rgba(196,30,45,0.04)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.06em', marginBottom: 10 }}>PROJEÇÃO 30 DIAS</p>
           <div style={{ display: 'flex', gap: 20, marginBottom: 10 }}>
             <div>
-              <p style={{ fontSize: 18, fontFamily: 'Fraunces, serif' }}>{projecao.peso_estimado}</p>
+              <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif' }}>{projecao.peso_estimado}</p>
               <p className="mono" style={{ fontSize: 9, color: 'var(--text-mute)' }}>peso estimado</p>
             </div>
             <div>
-              <p style={{ fontSize: 18, fontFamily: 'Fraunces, serif' }}>{projecao.gordura_estimada}</p>
+              <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif' }}>{projecao.gordura_estimada}</p>
               <p className="mono" style={{ fontSize: 9, color: 'var(--text-mute)' }}>% gordura</p>
             </div>
           </div>
@@ -112,7 +118,7 @@ export default function Dashboard({ plano, dietaPct }) {
           <input type="number" step="0.1" placeholder="0.0 kg" value={novoPeso} onChange={e => setNovoPeso(e.target.value)} style={{ flex: 1 }} />
           <motion.button whileTap={{ scale: 0.94 }} onClick={addPeso}
             style={{ width: 50, height: 50, borderRadius: 'var(--radius-sm)', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Plus size={20} color="#0D0D0D" />
+            <Plus size={20} color="#F5F3EE" />
           </motion.button>
         </div>
         <WeightChart weights={weights} />

@@ -20,10 +20,10 @@ export default function Compras({ plano, compras, onToggle }) {
     <div style={{ padding: '0 20px 100px' }}>
       <div style={{ padding: '20px 0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: 26, fontWeight: 300 }}>Compras</h2>
+          <h2 style={{ fontSize: 26, fontWeight: 600 }}>Compras</h2>
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{totalChecked}/{totalItens} no carrinho</p>
         </div>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(0,180,216,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(196,30,45,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <ShoppingBag size={17} color="var(--accent)" />
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function Compras({ plano, compras, onToggle }) {
                   background: isChecked ? 'var(--accent)' : 'transparent'
                 }} transition={{ duration: 0.2 }}
                   style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {isChecked && <Check size={13} color="#0D0D0D" strokeWidth={3} />}
+                  {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
                 </motion.div>
                 <span style={{ flex: 1, fontSize: 14, color: isChecked ? 'var(--text-mute)' : 'var(--text)', textDecoration: isChecked ? 'line-through' : 'none' }}>
                   {item}

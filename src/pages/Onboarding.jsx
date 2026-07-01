@@ -62,7 +62,7 @@ function BigInput(props) {
   return (
     <input {...props} style={{
       background: 'transparent', border: 'none', borderBottom: '1px solid var(--border2)',
-      borderRadius: 0, padding: '12px 0', fontSize: 28, fontFamily: 'Fraunces, serif',
+      borderRadius: 0, padding: '12px 0', fontSize: 28, fontFamily: 'Funnel Display, sans-serif',
       color: 'var(--text)', minHeight: 'unset', ...props.style
     }} />
   )
@@ -72,9 +72,9 @@ function Chip({ selected, onClick, children }) {
   return (
     <motion.button whileTap={{ scale: 0.95 }} onClick={onClick}
       style={{
-        padding: '11px 18px', borderRadius: 999,
+        padding: '11px 18px', borderRadius: 6,
         border: `1px solid ${selected ? 'var(--accent)' : 'var(--border2)'}`,
-        background: selected ? 'rgba(0,180,216,0.1)' : 'transparent',
+        background: selected ? 'rgba(196,30,45,0.1)' : 'transparent',
         color: selected ? 'var(--accent)' : 'var(--text-sub)',
         fontSize: 13, fontWeight: selected ? 500 : 400,
         cursor: 'pointer', minHeight: 'unset',
@@ -91,8 +91,8 @@ function NextBtn({ onClick, disabled, label = 'Continuar' }) {
       whileTap={{ scale: disabled ? 1 : 0.97 }}
       whileHover={{ opacity: disabled ? 1 : 0.85 }}
       style={{
-        width: '100%', padding: '17px', borderRadius: 999,
-        background: disabled ? 'var(--card)' : 'linear-gradient(135deg, var(--accent), var(--accent-dark))',
+        width: '100%', padding: '17px', borderRadius: 6,
+        background: disabled ? 'var(--card)' : 'linear-gradient(135deg, var(--accent), var(--accent-dim))',
         color: disabled ? 'var(--text-mute)' : '#fff',
         border: 'none', fontWeight: 500, fontSize: 15,
         cursor: disabled ? 'not-allowed' : 'pointer',
@@ -156,7 +156,7 @@ export default function Onboarding({ onComplete }) {
           <Loader2 size={32} color="var(--accent)" strokeWidth={1.5} />
         </motion.div>
         <motion.h2 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          style={{ fontSize: 24, fontWeight: 300, marginBottom: 10, textAlign: 'center' }}>
+          style={{ fontSize: 24, fontWeight: 600, marginBottom: 10, textAlign: 'center' }}>
           Montando seu plano.
         </motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
@@ -170,8 +170,14 @@ export default function Onboarding({ onComplete }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', paddingTop: 'var(--safe-top)' }}>
       {/* Header */}
-      <div style={{ padding: '32px 28px 0' }}>
-        <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.16em', marginBottom: 4 }}>PACE</p>
+      <div style={{ padding: '32px 28px 0', position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.2em' }}>PACE</p>
+          <div style={{ width: 14, height: 1, background: 'var(--border2)', transform: 'skewX(-20deg)' }} />
+          <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.1em' }}>
+            {String(step + 1).padStart(2, '0')} / {String(totalSteps).padStart(2, '0')}
+          </p>
+        </div>
         {step > 0 && (
           <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             onClick={() => setStep(s => s - 1)}
@@ -191,7 +197,7 @@ export default function Onboarding({ onComplete }) {
             {step === 0 && (
               <>
                 <Label>01 · Você</Label>
-                <h2 style={{ fontSize: 32, fontWeight: 300, marginBottom: 36, lineHeight: 1.2 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
                   Qual é o seu nome?
                 </h2>
                 <BigInput placeholder="Seu nome" value={data.nome} onChange={e => setD('nome', e.target.value)} autoFocus />
@@ -204,7 +210,7 @@ export default function Onboarding({ onComplete }) {
             {step === 1 && (
               <>
                 <Label>02 · Medidas</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 300, marginBottom: 32, lineHeight: 1.25 }}>
+                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>
                   Alguns números para calcular seus macros.
                 </h2>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
@@ -230,7 +236,7 @@ export default function Onboarding({ onComplete }) {
             {step === 2 && (
               <>
                 <Label>03 · Objetivo</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 300, marginBottom: 10, lineHeight: 1.25 }}>
+                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 10, lineHeight: 1.25 }}>
                   O que você quer alcançar?
                 </h2>
                 <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 28 }}>Pode selecionar mais de um.</p>
@@ -252,11 +258,11 @@ export default function Onboarding({ onComplete }) {
             {step === 3 && (
               <>
                 <Label>04 · Orçamento</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 300, marginBottom: 32, lineHeight: 1.25 }}>
+                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>
                   Quanto você pode investir em alimentação por mês?
                 </h2>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <span style={{ fontSize: 28, fontFamily: 'Fraunces, serif', color: 'var(--text-sub)' }}>R$</span>
+                  <span style={{ fontSize: 28, fontFamily: 'Funnel Display, sans-serif', color: 'var(--text-sub)' }}>R$</span>
                   <BigInput type="number" placeholder="0" value={data.orcamento} onChange={e => setD('orcamento', e.target.value)} style={{ fontSize: 40, flex: 1 }} />
                 </div>
                 <div style={{ flex: 1 }} />
@@ -268,7 +274,7 @@ export default function Onboarding({ onComplete }) {
             {step === 4 && (
               <>
                 <Label>05 · Restrições</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 300, marginBottom: 24, lineHeight: 1.25 }}>
+                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 24, lineHeight: 1.25 }}>
                   Alguma preferência ou restrição?
                 </h2>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 24 }}>

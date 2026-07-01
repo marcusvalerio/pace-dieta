@@ -1,25 +1,30 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* DT2 — Pace */
-  --bg:        #0D0D0D;
-  --card:      #1A1A1A;
-  --border:    #2A2A2A;
-  --border2:   #363636;
+  /* Pace v2 — inspirado em Aesop / Nothing / Porsche */
+  --bg:        #0A0A0A;   /* preto absoluto, mais frio */
+  --card:      #161615;   /* carvão quente */
+  --card2:     #1E1E1D;   /* card elevado */
+  --border:    #2A2A28;
+  --border2:   #38miral;
+  --border2:   #383836;
 
-  --text:      #FFFFFF;
-  --text-sub:  #B0BEC5;
-  --text-mute: #666666;
+  --text:      #F5F3EE;   /* off-white quente, tipo papel Aesop */
+  --text-sub:  #A8A49B;   /* bege acinzentado */
+  --text-mute: #5C594F;
 
-  --accent:      #00B4D8;
-  --accent-dark: #0077B6;
-  --silver:      #E8E8E8;
+  --accent:      #C41E2D;  /* vermelho racing/Porsche — usado com extrema parcimônia */
+  --accent-dim:  #7A1119;
+  --accent-glow: rgba(196,30,45,0.14);
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --gold:  #B8935F;  /* âmbar Aesop — segundo acento, mais raro ainda */
+
+  --radius-sm: 4px;   /* menos arredondado — mais técnico/industrial */
+  --radius-md: 10px;
+  --radius-lg: 18px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -32,7 +37,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gabarito', sans-serif;
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -41,8 +46,8 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: 'Fraunces', serif;
-  font-weight: 400;
+  font-family: 'Funnel Display', sans-serif;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -50,10 +55,10 @@ h1, h2, h3 {
   font-family: 'JetBrains Mono', monospace;
 }
 
-button { font-family: 'Inter', sans-serif; cursor: pointer; background: none; border: none; }
+button { font-family: 'Gabarito', sans-serif; cursor: pointer; background: none; border: none; }
 
 input, select, textarea {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gabarito', sans-serif;
   font-size: 16px;
   width: 100%;
   min-height: 50px;
@@ -63,7 +68,7 @@ input, select, textarea {
   background: var(--card);
   color: var(--text);
   outline: none;
-  transition: border-color 0.2s var(--ease);
+  transition: border-color 0.3s var(--ease);
   -webkit-appearance: none;
 }
 input:focus, select:focus, textarea:focus {

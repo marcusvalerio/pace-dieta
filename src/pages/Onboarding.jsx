@@ -74,7 +74,7 @@ function Chip({ selected, onClick, children }) {
       style={{
         padding: '11px 18px', borderRadius: 6,
         border: `1px solid ${selected ? 'var(--accent)' : 'var(--border2)'}`,
-        background: selected ? 'rgba(196,30,45,0.1)' : 'transparent',
+        background: selected ? 'rgba(184,147,95,0.1)' : 'transparent',
         color: selected ? 'var(--accent)' : 'var(--text-sub)',
         fontSize: 13, fontWeight: selected ? 500 : 400,
         cursor: 'pointer', minHeight: 'unset',

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, TrendingDown, TrendingUp, Minus } from 'lucide-react'
+import { Plus, TrendingDown, TrendingUp, Flame } from 'lucide-react'
 import { getWeights, saveWeights } from '../lib/storage'
 
 function WeightChart({ weights }) {
@@ -24,18 +24,18 @@ function WeightChart({ weights }) {
     <svg viewBox={`0 0 ${W} ${H}`} width="100%">
       <defs>
         <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+          <stop offset="0%" stopColor="#B8935F" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#B8935F" stopOpacity="0" />
         </linearGradient>
       </defs>
       <polygon points={area} fill="url(#wg)" />
-      <polyline points={pts} fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
-      {sorted.map((w, i) => <circle key={i} cx={x(i)} cy={y(w.val)} r="3" fill="var(--accent)" />)}
+      <polyline points={pts} fill="none" stroke="#B8935F" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+      {sorted.map((w, i) => <circle key={i} cx={x(i)} cy={y(w.val)} r="3" fill="#B8935F" />)}
     </svg>
   )
 }
 
-export default function Dashboard({ plano, dietaPct }) {
+export default function Dashboard({ plano, dietaPct, streak }) {
   const [weights, setWeights] = useState(getWeights())
   const [novoPeso, setNovoPeso] = useState('')
 
@@ -46,14 +46,15 @@ export default function Dashboard({ plano, dietaPct }) {
 
   const addPeso = () => {
     if (!novoPeso) return
-    const today = new Date().toISOString().split('T')[0]
-    const next = [...weights.filter(w => w.date !== today), { date: today, val: parseFloat(novoPeso) }]
+    const todayStr = new Date().toISOString().split('T')[0]
+    const next = [...weights.filter(w => w.date !== todayStr), { date: todayStr, val: parseFloat(novoPeso) }]
     setWeights(next)
     saveWeights(next)
     setNovoPeso('')
   }
 
   const usuario = plano?.usuario || {}
+  const nutri = plano?.resumo_nutricional || {}
   const projecao = plano?.projecao_30_dias || {}
 
   return (
@@ -66,11 +67,23 @@ export default function Dashboard({ plano, dietaPct }) {
             {new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()}
           </p>
         </div>
-        <h2 style={{ fontSize: 28, fontWeight: 600, marginTop: 6 }}>Seu progresso.</h2>
+        <h2 style={{ fontSize: 28, marginTop: 6 }}>Seu progresso.</h2>
       </div>
 
+      {/* Streak */}
+      {streak > 0 && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderRadius: 'var(--radius-md)', background: 'var(--accent-glow)', border: '1px solid var(--accent-dim)', marginTop: 20, marginBottom: 4 }}>
+          <Flame size={18} color="var(--accent)" />
+          <div>
+            <p style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 600 }}>{streak} dia{streak !== 1 ? 's' : ''} seguidos</p>
+            <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)' }}>dieta completa</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 24, marginBottom: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 16, marginBottom: 12 }}>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>DIETA HOJE</p>
           <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)' }}>{dietaPct}%</p>
@@ -79,13 +92,28 @@ export default function Dashboard({ plano, dietaPct }) {
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>PESO ATUAL</p>
           <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif' }}>{latest ? `${latest.val}kg` : '—'}</p>
           {diff !== null && (
-            <p className="mono" style={{ fontSize: 10, marginTop: 3, color: parseFloat(diff) <= 0 ? '#4ade80' : '#f87171', display: 'flex', alignItems: 'center', gap: 3 }}>
+            <p className="mono" style={{ fontSize: 10, marginTop: 3, color: parseFloat(diff) <= 0 ? 'var(--green)' : 'var(--red)', display: 'flex', alignItems: 'center', gap: 3 }}>
               {parseFloat(diff) <= 0 ? <TrendingDown size={11} /> : <TrendingUp size={11} />}
               {Math.abs(diff)}kg
             </p>
           )}
         </div>
       </div>
+
+      {/* Calorias e macros resumidos */}
+      {nutri.calorias_totais_dia && (
+        <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'var(--card)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
+            <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em' }}>META DIÁRIA</p>
+            <p className="mono" style={{ fontSize: 16, color: 'var(--accent)' }}>{nutri.calorias_totais_dia} kcal</p>
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <div><span style={{ fontSize: 13, color: 'var(--text-sub)' }}>P {nutri.proteinas_g}g</span></div>
+            <div><span style={{ fontSize: 13, color: 'var(--text-sub)' }}>C {nutri.carboidratos_g}g</span></div>
+            <div><span style={{ fontSize: 13, color: 'var(--text-sub)' }}>G {nutri.gorduras_g}g</span></div>
+          </div>
+        </div>
+      )}
 
       {/* Objetivo */}
       <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'var(--card)' }}>
@@ -95,7 +123,7 @@ export default function Dashboard({ plano, dietaPct }) {
 
       {/* Projeção */}
       {projecao.peso_estimado && (
-        <div style={{ border: '1px solid rgba(196,30,45,0.25)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'rgba(196,30,45,0.04)' }}>
+        <div style={{ border: '1px solid var(--accent-dim)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'var(--accent-glow)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.06em', marginBottom: 10 }}>PROJEÇÃO 30 DIAS</p>
           <div style={{ display: 'flex', gap: 20, marginBottom: 10 }}>
             <div>
@@ -118,7 +146,7 @@ export default function Dashboard({ plano, dietaPct }) {
           <input type="number" step="0.1" placeholder="0.0 kg" value={novoPeso} onChange={e => setNovoPeso(e.target.value)} style={{ flex: 1 }} />
           <motion.button whileTap={{ scale: 0.94 }} onClick={addPeso}
             style={{ width: 50, height: 50, borderRadius: 'var(--radius-sm)', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Plus size={20} color="#F5F3EE" />
+            <Plus size={20} color="#0A0A0A" />
           </motion.button>
         </div>
         <WeightChart weights={weights} />

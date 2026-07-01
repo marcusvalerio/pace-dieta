@@ -27,7 +27,7 @@ export default function Receitas({ plano }) {
           transition={{ delay: i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{ marginBottom: 12, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--card)', padding: '20px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(196,30,45,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(184,147,95,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChefHat size={15} color="var(--accent)" />
             </div>
             <p style={{ fontSize: 16, fontFamily: 'Funnel Display, sans-serif' }}>{RECEITA_LABELS[key] || key}</p>

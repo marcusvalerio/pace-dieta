@@ -1,25 +1,25 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Pace v2 — inspirado em Aesop / Nothing / Porsche */
-  --bg:        #0A0A0A;   /* preto absoluto, mais frio */
-  --card:      #161615;   /* carvão quente */
-  --card2:     #1E1E1D;   /* card elevado */
+  /* Pace v3 — Aesop-inspired amber */
+  --bg:        #0A0A0A;
+  --card:      #161615;
+  --card2:     #1E1E1D;
   --border:    #2A2A28;
-  --border2:   #38miral;
   --border2:   #383836;
 
-  --text:      #F5F3EE;   /* off-white quente, tipo papel Aesop */
-  --text-sub:  #A8A49B;   /* bege acinzentado */
+  --text:      #F5F3EE;
+  --text-sub:  #A8A49B;
   --text-mute: #5C594F;
 
-  --accent:      #C41E2D;  /* vermelho racing/Porsche — usado com extrema parcimônia */
-  --accent-dim:  #7A1119;
-  --accent-glow: rgba(196,30,45,0.14);
+  --accent:      #B8935F;
+  --accent-dim:  #7A6142;
+  --accent-glow: rgba(184,147,95,0.14);
 
-  --gold:  #B8935F;  /* âmbar Aesop — segundo acento, mais raro ainda */
+  --red:   #C41E2D;
+  --green: #6B8E5A;
 
-  --radius-sm: 4px;   /* menos arredondado — mais técnico/industrial */
+  --radius-sm: 4px;
   --radius-md: 10px;
   --radius-lg: 18px;
 

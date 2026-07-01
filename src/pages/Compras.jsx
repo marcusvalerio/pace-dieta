@@ -23,7 +23,7 @@ export default function Compras({ plano, compras, onToggle }) {
           <h2 style={{ fontSize: 26, fontWeight: 600 }}>Compras</h2>
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{totalChecked}/{totalItens} no carrinho</p>
         </div>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(196,30,45,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(184,147,95,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <ShoppingBag size={17} color="var(--accent)" />
         </div>
       </div>

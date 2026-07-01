@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Check, Pencil, X, Plus, Trash2 } from 'lucide-react'
 
 const MEAL_LABELS = {
   cafe_manha: 'Café da manhã',
@@ -10,12 +11,31 @@ const MEAL_LABELS = {
 
 const MEAL_ORDER = ['cafe_manha', 'pre_treino', 'almoco', 'janta']
 
-export default function Dieta({ plano, checked, onToggle }) {
+export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
   const refeicoes = plano?.plano_diario || {}
+  const [editando, setEditando] = useState(null) // mealKey em edição
 
   const totalItens = MEAL_ORDER.reduce((s, m) => s + (refeicoes[m]?.alimentos?.length || 0), 0)
   const totalChecked = Object.values(checked).filter(Boolean).length
   const pct = totalItens ? Math.round((totalChecked / totalItens) * 100) : 0
+
+  const updateAlimento = (mealKey, idx, field, value) => {
+    const next = { ...plano }
+    next.plano_diario[mealKey].alimentos[idx][field] = value
+    onUpdatePlano(next)
+  }
+
+  const removeAlimento = (mealKey, idx) => {
+    const next = { ...plano }
+    next.plano_diario[mealKey].alimentos.splice(idx, 1)
+    onUpdatePlano(next)
+  }
+
+  const addAlimento = (mealKey) => {
+    const next = { ...plano }
+    next.plano_diario[mealKey].alimentos.push({ item: '', quantidade: '' })
+    onUpdatePlano(next)
+  }
 
   return (
     <div style={{ padding: '0 20px 100px' }}>
@@ -23,7 +43,7 @@ export default function Dieta({ plano, checked, onToggle }) {
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 0 24px' }}>
         <div>
-          <h2 style={{ fontSize: 26, fontWeight: 600 }}>Hoje</h2>
+          <h2 style={{ fontSize: 26 }}>Hoje</h2>
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{totalChecked}/{totalItens} concluídos</p>
         </div>
         <div style={{ position: 'relative', width: 52, height: 52 }}>
@@ -49,6 +69,7 @@ export default function Dieta({ plano, checked, onToggle }) {
         const items = meal.alimentos || []
         const doneCount = items.filter((_, i) => checked[`${mealKey}__${i}`]).length
         const allDone = doneCount === items.length && items.length > 0
+        const isEditing = editando === mealKey
 
         return (
           <motion.div key={mealKey}
@@ -56,23 +77,47 @@ export default function Dieta({ plano, checked, onToggle }) {
             transition={{ delay: mi * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             style={{
               marginBottom: 12, borderRadius: 'var(--radius-md)',
-              border: `1px solid ${allDone ? 'rgba(196,30,45,0.3)' : 'var(--border)'}`,
-              background: allDone ? 'rgba(196,30,45,0.04)' : 'var(--card)',
+              border: `1px solid ${allDone ? 'var(--accent-dim)' : 'var(--border)'}`,
+              background: allDone ? 'var(--accent-glow)' : 'var(--card)',
               overflow: 'hidden', transition: 'border-color 0.3s, background 0.3s'
             }}>
             <div style={{ padding: '16px 18px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)' }}>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 500, color: allDone ? 'var(--accent)' : 'var(--text)' }}>{MEAL_LABELS[mealKey]}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: allDone ? 'var(--accent)' : 'var(--text)' }}>{MEAL_LABELS[mealKey]}</p>
+                  {meal.calorias && <span className="mono" style={{ fontSize: 10, color: 'var(--text-mute)' }}>· {meal.calorias} kcal</span>}
+                </div>
                 <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginTop: 2 }}>{meal.horario}</p>
               </div>
-              <p className="mono" style={{ fontSize: 11, color: allDone ? 'var(--accent)' : 'var(--text-mute)' }}>{doneCount}/{items.length}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <p className="mono" style={{ fontSize: 11, color: allDone ? 'var(--accent)' : 'var(--text-mute)' }}>{doneCount}/{items.length}</p>
+                <motion.button whileTap={{ scale: 0.9 }} onClick={() => setEditando(isEditing ? null : mealKey)}
+                  style={{ display: 'flex', color: isEditing ? 'var(--accent)' : 'var(--text-mute)', minHeight: 'unset', padding: 4 }}>
+                  {isEditing ? <X size={15} /> : <Pencil size={14} />}
+                </motion.button>
+              </div>
             </div>
+
             {items.map((food, i) => {
               const key = `${mealKey}__${i}`
               const isChecked = !!checked[key]
+              if (isEditing) {
+                return (
+                  <div key={i} style={{ display: 'flex', gap: 8, padding: '10px 18px', alignItems: 'center', borderBottom: '1px solid var(--border)' }}>
+                    <input value={food.item} onChange={e => updateAlimento(mealKey, i, 'item', e.target.value)}
+                      placeholder="Alimento" style={{ flex: 2, minHeight: 38, padding: '8px 10px', fontSize: 13 }} />
+                    <input value={food.quantidade} onChange={e => updateAlimento(mealKey, i, 'quantidade', e.target.value)}
+                      placeholder="Qtd" style={{ flex: 1, minHeight: 38, padding: '8px 10px', fontSize: 13 }} />
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={() => removeAlimento(mealKey, i)}
+                      style={{ color: 'var(--red)', display: 'flex', minHeight: 'unset', padding: 4 }}>
+                      <Trash2 size={14} />
+                    </motion.button>
+                  </div>
+                )
+              }
               return (
                 <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => onToggle(key)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer', background: isChecked ? 'rgba(196,30,45,0.03)' : 'transparent' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer', background: isChecked ? 'rgba(184,147,95,0.03)' : 'transparent' }}>
                   <motion.div animate={{
                     borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
                     background: isChecked ? 'var(--accent)' : 'transparent'
@@ -87,13 +132,22 @@ export default function Dieta({ plano, checked, onToggle }) {
                 </motion.div>
               )
             })}
+
+            {isEditing && (
+              <div style={{ padding: '10px 18px' }}>
+                <motion.button whileTap={{ scale: 0.96 }} onClick={() => addAlimento(mealKey)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: 12, minHeight: 'unset', padding: '6px 0' }}>
+                  <Plus size={13} /> Adicionar alimento
+                </motion.button>
+              </div>
+            )}
           </motion.div>
         )
       })}
 
       {pct === 100 && totalItens > 0 && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-          style={{ textAlign: 'center', padding: '28px 20px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(196,30,45,0.3)', background: 'rgba(196,30,45,0.05)', marginTop: 8 }}>
+          style={{ textAlign: 'center', padding: '28px 20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--accent-dim)', background: 'var(--accent-glow)', marginTop: 8 }}>
           <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)', marginBottom: 6 }}>Dieta completa hoje.</p>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.08em' }}>CONSISTÊNCIA É O CAMINHO</p>
         </motion.div>

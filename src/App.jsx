@@ -10,7 +10,7 @@ import Sintomas from './pages/Sintomas'
 import NavBar from './components/NavBar'
 import { getPlano, savePlano, getChecked, saveChecked, getCompras, saveCompras, calcularStreak } from './lib/storage'
 
-const ease = [0.16, 1, 0.3, 1]
+const easeSoft = [0.22, 1, 0.36, 1]
 
 function today() { return new Date().toISOString().split('T')[0] }
 
@@ -65,8 +65,10 @@ export default function App() {
       <div style={{ maxWidth: 480, margin: '0 auto' }}>
         <AnimatePresence mode="wait">
           <motion.div key={tab}
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.35, ease }}>
+            initial={{ opacity: 0, y: 14, filter: 'blur(3px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -8, filter: 'blur(2px)' }}
+            transition={{ duration: 0.45, ease: easeSoft }}>
             {tab === 'dashboard' && <Dashboard plano={plano} dietaPct={dietaPct} streak={streak} />}
             {tab === 'dieta'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
             {tab === 'receitas'  && <Receitas plano={plano} />}

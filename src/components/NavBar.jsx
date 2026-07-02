@@ -26,7 +26,7 @@ export default function NavBar({ active, onChange }) {
             <motion.button key={id} onClick={() => onChange(id)}
               whileTap={{ scale: 0.92 }}
               style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '6px 2px', position: 'relative' }}>
-              <motion.div animate={{ color: isActive ? 'var(--accent)' : 'var(--text-mute)' }} transition={{ duration: 0.25 }}>
+              <motion.div animate={{ color: isActive ? 'var(--accent)' : 'var(--text-mute)' }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
                 <Icon size={19} strokeWidth={isActive ? 2 : 1.5} />
               </motion.div>
               <span className="mono" style={{ fontSize: 8, letterSpacing: '0.02em', color: isActive ? 'var(--accent)' : 'var(--text-mute)', textAlign: 'center' }}>{label}</span>

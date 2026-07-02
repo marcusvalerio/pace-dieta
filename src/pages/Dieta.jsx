@@ -1,19 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Pencil, X, Plus, Trash2 } from 'lucide-react'
-
-const MEAL_LABELS = {
-  cafe_manha: 'Café da manhã',
-  pre_treino: 'Pré-treino',
-  almoco: 'Almoço',
-  janta: 'Janta',
-}
-
-const MEAL_ORDER = ['cafe_manha', 'pre_treino', 'almoco', 'janta']
+import { ordenarRefeicoes, labelRefeicao } from '../lib/refeicoes'
 
 export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
   const refeicoes = plano?.plano_diario || {}
   const [editando, setEditando] = useState(null) // mealKey em edição
+  const MEAL_ORDER = ordenarRefeicoes(refeicoes)
 
   const totalItens = MEAL_ORDER.reduce((s, m) => s + (refeicoes[m]?.alimentos?.length || 0), 0)
   const totalChecked = Object.values(checked).filter(Boolean).length
@@ -84,7 +77,7 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
             <div style={{ padding: '16px 18px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <p style={{ fontSize: 15, fontWeight: 600, color: allDone ? 'var(--accent)' : 'var(--text)' }}>{MEAL_LABELS[mealKey]}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: allDone ? 'var(--accent)' : 'var(--text)' }}>{labelRefeicao(mealKey)}</p>
                   {meal.calorias && <span className="mono" style={{ fontSize: 10, color: 'var(--text-mute)' }}>· {meal.calorias} kcal</span>}
                 </div>
                 <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginTop: 2 }}>{meal.horario}</p>

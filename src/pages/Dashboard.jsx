@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, TrendingDown, TrendingUp, Flame } from 'lucide-react'
 import { getWeights, saveWeights } from '../lib/storage'
+import ReferenciasCard from '../components/ReferenciasCard'
 
 function WeightChart({ weights }) {
   if (weights.length < 2) {
@@ -72,9 +73,11 @@ export default function Dashboard({ plano, dietaPct, streak }) {
 
       {/* Streak */}
       {streak > 0 && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderRadius: 'var(--radius-md)', background: 'var(--accent-glow)', border: '1px solid var(--accent-dim)', marginTop: 20, marginBottom: 4 }}>
-          <Flame size={18} color="var(--accent)" />
+          <motion.div animate={{ scale: [1, 1.12, 1] }} transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}>
+            <Flame size={18} color="var(--accent)" />
+          </motion.div>
           <div>
             <p style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 600 }}>{streak} dia{streak !== 1 ? 's' : ''} seguidos</p>
             <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)' }}>dieta completa</p>
@@ -151,6 +154,8 @@ export default function Dashboard({ plano, dietaPct, streak }) {
         </div>
         <WeightChart weights={weights} />
       </div>
+
+      <ReferenciasCard />
     </div>
   )
 }

@@ -4,12 +4,15 @@ import { Plus, TrendingDown, TrendingUp } from 'lucide-react'
 import { getWeights, saveWeights } from '../lib/storage'
 import ReferenciasCard from '../components/ReferenciasCard'
 import SintomasWidget from '../components/SintomasWidget'
-import { IllustrationFlame } from '../components/Illustrations'
+import { IllustrationFlame, IllustrationScale } from '../components/Illustrations'
 
 function WeightChart({ weights }) {
   if (weights.length < 2) {
     return (
-      <div style={{ padding: '32px 0', textAlign: 'center' }}>
+      <div style={{ padding: '20px 0 24px', textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+          <IllustrationScale size={64} />
+        </div>
         <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)' }}>Registre ao menos 2 pesagens para ver o gráfico</p>
       </div>
     )

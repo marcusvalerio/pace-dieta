@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Flame, Beef, Wheat, Droplet } from 'lucide-react'
+import { IllustrationLeaf } from '../components/Illustrations'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -31,6 +32,12 @@ export default function ResumoGeracao({ plano, onContinue }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 'var(--safe-top)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flex: 1, padding: '40px 28px 32px', maxWidth: 480, width: '100%', margin: '0 auto' }}>
+
+        <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+          <IllustrationLeaf size={72} />
+        </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.2em', marginBottom: 8 }}>SEU PLANO ESTÁ PRONTO</p>

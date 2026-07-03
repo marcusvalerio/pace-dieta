@@ -91,13 +91,8 @@ export default function Dashboard({ plano, dietaPct, streak }) {
         </motion.div>
       )}
 
-      {/* Sintomas widget */}
-      <div style={{ marginTop: streak > 0 ? 12 : 20 }}>
-        <SintomasWidget />
-      </div>
-
       {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 4, marginBottom: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: streak > 0 ? 12 : 20, marginBottom: 12 }}>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>DIETA HOJE</p>
           <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)' }}>{dietaPct}%</p>
@@ -167,6 +162,10 @@ export default function Dashboard({ plano, dietaPct, streak }) {
       </div>
 
       <ReferenciasCard />
+
+      <div style={{ marginTop: 12 }}>
+        <SintomasWidget />
+      </div>
     </div>
   )
 }

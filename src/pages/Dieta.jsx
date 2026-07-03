@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Pencil, X, Plus, Trash2 } from 'lucide-react'
 import { ordenarRefeicoes, labelRefeicao } from '../lib/refeicoes'
+import { IllustrationCheck } from '../components/Illustrations'
 
 export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
   const refeicoes = plano?.plano_diario || {}
@@ -140,7 +141,11 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
 
       {pct === 100 && totalItens > 0 && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ textAlign: 'center', padding: '28px 20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--accent-dim)', background: 'var(--accent-glow)', marginTop: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+            <IllustrationCheck size={64} />
+          </div>
           <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)', marginBottom: 6 }}>Dieta completa hoje.</p>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.08em' }}>CONSISTÊNCIA É O CAMINHO</p>
         </motion.div>

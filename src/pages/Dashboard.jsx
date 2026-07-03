@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, TrendingDown, TrendingUp, Flame } from 'lucide-react'
+import { Plus, TrendingDown, TrendingUp } from 'lucide-react'
 import { getWeights, saveWeights } from '../lib/storage'
 import ReferenciasCard from '../components/ReferenciasCard'
+import SintomasWidget from '../components/SintomasWidget'
+import { IllustrationFlame } from '../components/Illustrations'
 
 function WeightChart({ weights }) {
   if (weights.length < 2) {
@@ -75,8 +77,9 @@ export default function Dashboard({ plano, dietaPct, streak }) {
       {streak > 0 && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderRadius: 'var(--radius-md)', background: 'var(--accent-glow)', border: '1px solid var(--accent-dim)', marginTop: 20, marginBottom: 4 }}>
-          <motion.div animate={{ scale: [1, 1.12, 1] }} transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}>
-            <Flame size={18} color="var(--accent)" />
+          <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IllustrationFlame size={28} />
           </motion.div>
           <div>
             <p style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 600 }}>{streak} dia{streak !== 1 ? 's' : ''} seguidos</p>
@@ -85,8 +88,13 @@ export default function Dashboard({ plano, dietaPct, streak }) {
         </motion.div>
       )}
 
+      {/* Sintomas widget */}
+      <div style={{ marginTop: streak > 0 ? 12 : 20 }}>
+        <SintomasWidget />
+      </div>
+
       {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 16, marginBottom: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 4, marginBottom: 12 }}>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>DIETA HOJE</p>
           <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)' }}>{dietaPct}%</p>

@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
-import { LayoutGrid, UtensilsCrossed, ChefHat, ShoppingBag, HeartPulse } from 'lucide-react'
+import { LayoutGrid, UtensilsCrossed, ChefHat, ShoppingBag, User } from 'lucide-react'
 
 const TABS = [
   { id: 'dashboard', label: 'Painel',   Icon: LayoutGrid },
   { id: 'dieta',     label: 'Dieta',    Icon: UtensilsCrossed },
   { id: 'receitas',  label: 'Receitas', Icon: ChefHat },
   { id: 'compras',   label: 'Compras',  Icon: ShoppingBag },
-  { id: 'sintomas',  label: 'Como estou', Icon: HeartPulse },
+  { id: 'perfil',    label: 'Perfil',   Icon: User },
 ]
 
 export default function NavBar({ active, onChange }) {
@@ -29,7 +29,7 @@ export default function NavBar({ active, onChange }) {
               <motion.div animate={{ color: isActive ? 'var(--accent)' : 'var(--text-mute)' }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
                 <Icon size={19} strokeWidth={isActive ? 2 : 1.5} />
               </motion.div>
-              <span className="mono" style={{ fontSize: 8, letterSpacing: '0.02em', color: isActive ? 'var(--accent)' : 'var(--text-mute)', textAlign: 'center' }}>{label}</span>
+              <span className="mono" style={{ fontSize: 9, letterSpacing: '0.02em', color: isActive ? 'var(--accent)' : 'var(--text-mute)', textAlign: 'center' }}>{label}</span>
               {isActive && (
                 <motion.div layoutId="navIndicator"
                   style={{ position: 'absolute', bottom: -10, width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)' }}

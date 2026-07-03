@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Dieta from './pages/Dieta'
 import Receitas from './pages/Receitas'
 import Compras from './pages/Compras'
-import Sintomas from './pages/Sintomas'
+import Perfil from './pages/Perfil'
 import NavBar from './components/NavBar'
 import { getPlano, savePlano, getChecked, saveChecked, getCompras, saveCompras, calcularStreak } from './lib/storage'
 
@@ -42,6 +42,14 @@ export default function App() {
     savePlano(novoPlano)
   }
 
+  const handlePlanoAtualizado = (novoPlano, mostrarResumoFlag) => {
+    setPlano(novoPlano)
+    if (mostrarResumoFlag) {
+      setMostrarResumo(true)
+      setTab('dashboard')
+    }
+  }
+
   const totalItens = Object.values(plano?.plano_diario || {}).reduce((s, m) => s + (m.alimentos?.length || 0), 0)
   const totalChecked = Object.values(checkedHoje).filter(Boolean).length
   const dietaPct = totalItens ? Math.round((totalChecked / totalItens) * 100) : 0
@@ -73,7 +81,7 @@ export default function App() {
             {tab === 'dieta'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
             {tab === 'receitas'  && <Receitas plano={plano} />}
             {tab === 'compras'   && <Compras plano={plano} compras={compras} onToggle={toggleCompra} />}
-            {tab === 'sintomas'  && <Sintomas />}
+            {tab === 'perfil'    && <Perfil plano={plano} onPlanoAtualizado={handlePlanoAtualizado} />}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { Plus, TrendingDown, TrendingUp } from 'lucide-react'
 import { getWeights, saveWeights } from '../lib/storage'
 import ReferenciasCard from '../components/ReferenciasCard'
-import SintomasWidget from '../components/SintomasWidget'
 import { IllustrationFlame, IllustrationScale } from '../components/Illustrations'
 
 function WeightChart({ weights }) {
@@ -162,10 +161,6 @@ export default function Dashboard({ plano, dietaPct, streak }) {
       </div>
 
       <ReferenciasCard />
-
-      <div style={{ marginTop: 12 }}>
-        <SintomasWidget />
-      </div>
     </div>
   )
 }

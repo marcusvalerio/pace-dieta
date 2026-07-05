@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Loader2, Download, Trash2, RefreshCw, ChevronRight } from 'lucide-react'
 import { gerarDieta } from '../lib/groq'
-import { savePlano, clearPlano, getWeights, getChecked, getCompras } from '../lib/storage'
-import { getSintomas } from '../lib/sintomas'
+import { savePlano, getWeights, getChecked, getCompras } from '../lib/storage'
+import { getSintomasHistorico } from '../lib/sintomas'
 
 const OBJETIVOS = ['Perda de gordura','Hipertrofia','Definição muscular','Manutenção','Performance esportiva','Saúde geral']
 const REFEICOES_OPCOES = [
@@ -44,7 +44,7 @@ function Chip({ selected, onClick, disabled, children }) {
   )
 }
 
-export default function Perfil({ plano, onPlanoAtualizado }) {
+export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onApagarTudo }) {
   const u = plano?.usuario || {}
   const [form, setForm] = useState({
     nome: u.nome || '',
@@ -83,7 +83,7 @@ export default function Perfil({ plano, onPlanoAtualizado }) {
         restricoes: [...form.restricoes, ...(form.restricaoLivre.trim() ? [form.restricaoLivre.trim()] : [])],
       }
     }
-    savePlano(next)
+    savePlano(userId, next)
     onPlanoAtualizado(next)
     setSalvo(true)
     setTimeout(() => setSalvo(false), 2000)
@@ -102,7 +102,7 @@ export default function Perfil({ plano, onPlanoAtualizado }) {
     }
     try {
       const novoPlano = await gerarDieta(usuario)
-      savePlano(novoPlano)
+      await savePlano(userId, novoPlano)
       onPlanoAtualizado(novoPlano, true) // true = mostrar resumo
     } catch (e) {
       setRegenerando(false)
@@ -110,11 +110,11 @@ export default function Perfil({ plano, onPlanoAtualizado }) {
     }
   }
 
-  const exportarDados = () => {
-    const backup = {
-      plano, pesos: getWeights(), checklist: getChecked(), compras: getCompras(), sintomas: getSintomas(),
-      exportado_em: new Date().toISOString()
-    }
+  const exportarDados = async () => {
+    const [pesos, checklist, comp, sintomas] = await Promise.all([
+      getWeights(userId), getChecked(userId), getCompras(userId), getSintomasHistorico(userId, 90)
+    ])
+    const backup = { plano, pesos, checklist, compras: comp, sintomas, exportado_em: new Date().toISOString() }
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -124,9 +124,8 @@ export default function Perfil({ plano, onPlanoAtualizado }) {
     URL.revokeObjectURL(url)
   }
 
-  const apagarTudo = () => {
-    clearPlano()
-    window.location.reload()
+  const apagarTudo = async () => {
+    await onApagarTudo()
   }
 
   if (regenerando) {
@@ -232,6 +231,11 @@ export default function Perfil({ plano, onPlanoAtualizado }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <motion.button whileTap={{ scale: 0.97 }} onClick={onLogout}
+        style={{ width: '100%', padding: '13px', borderRadius: 6, border: '1px solid var(--border2)', color: 'var(--text-mute)', fontSize: 13, marginTop: 12, background: 'transparent' }}>
+        Sair da conta
+      </motion.button>
     </div>
   )
 }

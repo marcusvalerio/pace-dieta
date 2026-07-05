@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check, ShoppingBag } from 'lucide-react'
+import { CheckRipple } from '../components/CheckRipple'
 
 const CAT_LABELS = {
   acougue: 'Açougue',
@@ -12,9 +14,18 @@ const CAT_LABELS = {
 export default function Compras({ plano, compras, onToggle }) {
   const lista = plano?.lista_compras || {}
   const categorias = Object.entries(lista).filter(([, items]) => items?.length > 0)
+  const [rippleKey, setRippleKey] = useState(null)
 
   const totalItens = categorias.reduce((s, [, items]) => s + items.length, 0)
   const totalChecked = Object.values(compras).filter(Boolean).length
+
+  const handleToggle = (key, isChecked) => {
+    if (!isChecked) {
+      setRippleKey(key)
+      setTimeout(() => setRippleKey(k => k === key ? null : k), 550)
+    }
+    onToggle(key)
+  }
 
   return (
     <div style={{ padding: '0 20px 100px' }}>
@@ -40,15 +51,18 @@ export default function Compras({ plano, compras, onToggle }) {
             const key = `${cat}__${i}`
             const isChecked = !!compras[key]
             return (
-              <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => onToggle(key)}
+              <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => handleToggle(key, isChecked)}
                 style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 18px', cursor: 'pointer', borderBottom: i < items.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                <motion.div animate={{
-                  borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
-                  background: isChecked ? 'var(--accent)' : 'transparent'
-                }} transition={{ duration: 0.2 }}
-                  style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
-                </motion.div>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <CheckRipple show={rippleKey === key} />
+                  <motion.div animate={{
+                    borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
+                    background: isChecked ? 'var(--accent)' : 'transparent'
+                  }} transition={{ duration: 0.2 }}
+                    style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
+                  </motion.div>
+                </div>
                 <span style={{ flex: 1, fontSize: 14, color: isChecked ? 'var(--text-mute)' : 'var(--text)', textDecoration: isChecked ? 'line-through' : 'none' }}>
                   {item}
                 </span>

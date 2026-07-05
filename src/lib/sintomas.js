@@ -1,18 +1,26 @@
-const KEY = 'pace_sintomas'
-
-export function getSintomas() {
-  try { return JSON.parse(localStorage.getItem(KEY)) || {} } catch { return {} }
-}
-export function saveSintomas(data) {
-  localStorage.setItem(KEY, JSON.stringify(data))
-}
+import { supabase } from './supabase'
 
 export function today() { return new Date().toISOString().split('T')[0] }
 
-// Retorna true se o check-in de hoje ainda não foi respondido nem dispensado
-export function precisaCheckinHoje() {
-  const all = getSintomas()
-  const hoje = all[today()]
+export async function getSintomasHoje(userId) {
+  if (!userId) return null
+  const { data } = await supabase.from('pace_sintomas').select('*').eq('user_id', userId).eq('data', today()).maybeSingle()
+  return data
+}
+
+export async function getSintomasHistorico(userId, limit = 6) {
+  if (!userId) return []
+  const { data } = await supabase.from('pace_sintomas').select('*').eq('user_id', userId).order('data', { ascending: false }).limit(limit)
+  return data || []
+}
+
+export async function salvarSintomas(userId, campos) {
+  if (!userId) return
+  await supabase.from('pace_sintomas').upsert({ user_id: userId, data: today(), ...campos })
+}
+
+export async function precisaCheckinHoje(userId) {
+  const hoje = await getSintomasHoje(userId)
   return !hoje || (!hoje.enviado && !hoje.dismissed)
 }
 

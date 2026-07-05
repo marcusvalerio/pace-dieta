@@ -3,11 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Pencil, X, Plus, Trash2 } from 'lucide-react'
 import { ordenarRefeicoes, labelRefeicao } from '../lib/refeicoes'
 import { IllustrationCheck } from '../components/Illustrations'
+import { CheckRipple } from '../components/CheckRipple'
 
 export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
   const refeicoes = plano?.plano_diario || {}
   const [editando, setEditando] = useState(null) // mealKey em edição
+  const [rippleKey, setRippleKey] = useState(null)
   const MEAL_ORDER = ordenarRefeicoes(refeicoes)
+
+  const handleToggle = (key, isChecked) => {
+    if (!isChecked) {
+      setRippleKey(key)
+      setTimeout(() => setRippleKey(k => k === key ? null : k), 550)
+    }
+    onToggle(key)
+  }
 
   const totalItens = MEAL_ORDER.reduce((s, m) => s + (refeicoes[m]?.alimentos?.length || 0), 0)
   const totalChecked = Object.values(checked).filter(Boolean).length
@@ -110,15 +120,18 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
                 )
               }
               return (
-                <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => onToggle(key)}
+                <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => handleToggle(key, isChecked)}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer', background: isChecked ? 'rgba(184,147,95,0.03)' : 'transparent' }}>
-                  <motion.div animate={{
-                    borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
-                    background: isChecked ? 'var(--accent)' : 'transparent'
-                  }} transition={{ duration: 0.2 }}
-                    style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
-                  </motion.div>
+                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <CheckRipple show={rippleKey === key} />
+                    <motion.div animate={{
+                      borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
+                      background: isChecked ? 'var(--accent)' : 'transparent'
+                    }} transition={{ duration: 0.2 }}
+                      style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
+                    </motion.div>
+                  </div>
                   <span style={{ flex: 1, fontSize: 14, color: isChecked ? 'var(--text-mute)' : 'var(--text)', textDecoration: isChecked ? 'line-through' : 'none', transition: 'color 0.2s' }}>
                     {food.item}
                   </span>

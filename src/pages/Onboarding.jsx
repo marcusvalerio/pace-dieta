@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Check, Loader2, Info } from 'lucide-react'
 import { gerarDieta } from '../lib/groq'
-import { savePlano } from '../lib/storage'
 
 const OBJETIVOS = [
   'Perda de gordura',
@@ -117,7 +116,7 @@ function NextBtn({ onClick, disabled, label = 'Continuar' }) {
   )
 }
 
-export default function Onboarding({ onComplete }) {
+export default function Onboarding({ userId, onComplete }) {
   const [step, setStep] = useState(0)
   const [gerando, setGerando] = useState(false)
   const [erro, setErro] = useState('')
@@ -161,8 +160,7 @@ export default function Onboarding({ onComplete }) {
 
     try {
       const plano = await gerarDieta(usuario)
-      savePlano(plano)
-      onComplete(plano)
+      await onComplete(plano)
     } catch (e) {
       setErro(e.message || 'Não foi possível gerar sua dieta. Tente novamente.')
       setGerando(false)

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Flame, Beef, Wheat, Droplet } from 'lucide-react'
 import { IllustrationLeaf } from '../components/Illustrations'
+import { CountUp } from '../components/CountUp'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -13,7 +14,7 @@ function MacroBar({ label, value, unit, color, Icon, max }) {
           <Icon size={14} color={color} />
           <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>{label}</span>
         </div>
-        <span className="mono" style={{ fontSize: 13, color: 'var(--text)' }}>{value}{unit}</span>
+        <span className="mono" style={{ fontSize: 13, color: 'var(--text)' }}><CountUp value={value} duration={1} />{unit}</span>
       </div>
       <div style={{ background: 'var(--border)', borderRadius: 999, height: 5, overflow: 'hidden' }}>
         <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
@@ -58,7 +59,7 @@ export default function ResumoGeracao({ plano, onContinue }) {
           </div>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
             style={{ fontSize: 52, fontFamily: 'Funnel Display, sans-serif', fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
-            {nutri.calorias_totais_dia || '—'}
+{nutri.calorias_totais_dia ? <CountUp value={nutri.calorias_totais_dia} duration={1.3} /> : '—'}
           </motion.p>
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 6 }}>kcal / dia</p>
         </motion.div>

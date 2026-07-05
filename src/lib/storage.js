@@ -1,61 +1,85 @@
-const KEY = 'pace_plano'
-const CHECKED_KEY = 'pace_checked'
-const WEIGHTS_KEY = 'pace_weights'
-const COMPRAS_KEY = 'pace_compras'
-const STREAK_KEY = 'pace_streak'
+import { supabase } from './supabase'
 
-export function getPlano() {
-  try { return JSON.parse(localStorage.getItem(KEY)) } catch { return null }
+// ── Plano ──────────────────────────────────────────────
+export async function getPlano(userId) {
+  if (!userId) return null
+  const { data } = await supabase.from('pace_planos').select('plano').eq('user_id', userId).maybeSingle()
+  return data?.plano || null
 }
-export function savePlano(plano) {
-  localStorage.setItem(KEY, JSON.stringify(plano))
+export async function savePlano(userId, plano) {
+  if (!userId) return
+  await supabase.from('pace_planos').upsert({ user_id: userId, plano, updated_at: new Date().toISOString() })
 }
-export function clearPlano() {
-  localStorage.removeItem(KEY)
-  localStorage.removeItem(CHECKED_KEY)
-  localStorage.removeItem(COMPRAS_KEY)
-}
-
-// checked agora é por dia: { "2026-07-01": { "cafe_manha__0": true, ... } }
-export function getChecked() {
-  try { return JSON.parse(localStorage.getItem(CHECKED_KEY)) || {} } catch { return {} }
-}
-export function saveChecked(checked) {
-  localStorage.setItem(CHECKED_KEY, JSON.stringify(checked))
+export async function clearPlano(userId) {
+  if (!userId) return
+  await supabase.from('pace_planos').delete().eq('user_id', userId)
+  await supabase.from('pace_pesos').delete().eq('user_id', userId)
+  await supabase.from('pace_checklist').delete().eq('user_id', userId)
+  await supabase.from('pace_compras').delete().eq('user_id', userId)
+  await supabase.from('pace_sintomas').delete().eq('user_id', userId)
+  await supabase.from('pace_celebracoes').delete().eq('user_id', userId)
 }
 
-export function getCompras() {
-  try { return JSON.parse(localStorage.getItem(COMPRAS_KEY)) || {} } catch { return {} }
+// ── Checklist diário ───────────────────────────────────
+export async function getChecked(userId) {
+  if (!userId) return {}
+  const { data } = await supabase.from('pace_checklist').select('data, itens').eq('user_id', userId)
+  const porDia = {}
+  ;(data || []).forEach(row => { porDia[row.data] = row.itens || {} })
+  return porDia
 }
-export function saveCompras(compras) {
-  localStorage.setItem(COMPRAS_KEY, JSON.stringify(compras))
+export async function saveCheckedDia(userId, data, itens) {
+  if (!userId) return
+  await supabase.from('pace_checklist').upsert({ user_id: userId, data, itens })
 }
 
-export function getWeights() {
-  try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY)) || [] } catch { return [] }
+// ── Lista de compras ───────────────────────────────────
+export async function getCompras(userId) {
+  if (!userId) return {}
+  const { data } = await supabase.from('pace_compras').select('itens').eq('user_id', userId).maybeSingle()
+  return data?.itens || {}
 }
-export function saveWeights(weights) {
-  localStorage.setItem(WEIGHTS_KEY, JSON.stringify(weights))
+export async function saveCompras(userId, itens) {
+  if (!userId) return
+  await supabase.from('pace_compras').upsert({ user_id: userId, itens, updated_at: new Date().toISOString() })
 }
 
-// Streak: calcula quantos dias seguidos (terminando hoje ou ontem) a dieta foi 100% concluída
+// ── Peso ───────────────────────────────────────────────
+export async function getWeights(userId) {
+  if (!userId) return []
+  const { data } = await supabase.from('pace_pesos').select('data, valor').eq('user_id', userId).order('data')
+  return (data || []).map(w => ({ date: w.data, val: Number(w.valor) }))
+}
+export async function saveWeight(userId, date, val) {
+  if (!userId) return
+  await supabase.from('pace_pesos').upsert({ user_id: userId, data: date, valor: val })
+}
+
+// ── Streak / celebração ────────────────────────────────
+export async function getCelebracoes(userId) {
+  if (!userId) return []
+  const { data } = await supabase.from('pace_celebracoes').select('data').eq('user_id', userId)
+  return (data || []).map(c => c.data)
+}
+export async function marcarCelebrado(userId, date) {
+  if (!userId) return
+  await supabase.from('pace_celebracoes').upsert({ user_id: userId, data: date })
+}
+
+// Streak: dias seguidos (terminando hoje ou ontem) com dieta 100% completa
 export function calcularStreak(checkedPorDia, totalItensDia) {
   if (!totalItensDia) return 0
-  const dias = Object.keys(checkedPorDia).sort().reverse()
   let streak = 0
   let cursor = new Date()
-
   for (let i = 0; i < 365; i++) {
     const dateStr = cursor.toISOString().split('T')[0]
     const diaChecked = checkedPorDia[dateStr] || {}
     const doneCount = Object.values(diaChecked).filter(Boolean).length
     const completo = doneCount >= totalItensDia && totalItensDia > 0
-
     if (completo) {
       streak++
       cursor.setDate(cursor.getDate() - 1)
     } else if (dateStr === new Date().toISOString().split('T')[0]) {
-      // hoje ainda não completo — não quebra streak, só não conta ainda
       cursor.setDate(cursor.getDate() - 1)
       continue
     } else {

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, TrendingDown, TrendingUp } from 'lucide-react'
-import { getWeights, saveWeights } from '../lib/storage'
+import { getWeights, saveWeight } from '../lib/storage'
 import ReferenciasCard from '../components/ReferenciasCard'
-import { IllustrationFlame, IllustrationScale } from '../components/Illustrations'
+import { IllustrationScale } from '../components/Illustrations'
+import { CountUp } from '../components/CountUp'
 
 function WeightChart({ weights }) {
   if (weights.length < 2) {
@@ -40,22 +41,27 @@ function WeightChart({ weights }) {
   )
 }
 
-export default function Dashboard({ plano, dietaPct, streak }) {
-  const [weights, setWeights] = useState(getWeights())
+export default function Dashboard({ plano, dietaPct, streak, userId }) {
+  const [weights, setWeights] = useState([])
   const [novoPeso, setNovoPeso] = useState('')
+
+  useEffect(() => {
+    getWeights(userId).then(setWeights)
+  }, [userId])
 
   const sorted = [...weights].sort((a, b) => b.date.localeCompare(a.date))
   const latest = sorted[0]
   const prev = sorted[1]
   const diff = latest && prev ? (latest.val - prev.val).toFixed(1) : null
 
-  const addPeso = () => {
+  const addPeso = async () => {
     if (!novoPeso) return
     const todayStr = new Date().toISOString().split('T')[0]
-    const next = [...weights.filter(w => w.date !== todayStr), { date: todayStr, val: parseFloat(novoPeso) }]
+    const val = parseFloat(novoPeso)
+    const next = [...weights.filter(w => w.date !== todayStr), { date: todayStr, val }]
     setWeights(next)
-    saveWeights(next)
     setNovoPeso('')
+    await saveWeight(userId, todayStr, val)
   }
 
   const usuario = plano?.usuario || {}
@@ -79,12 +85,12 @@ export default function Dashboard({ plano, dietaPct, streak }) {
       {streak > 0 && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderRadius: 'var(--radius-md)', background: 'var(--accent-glow)', border: '1px solid var(--accent-dim)', marginTop: 20, marginBottom: 4 }}>
-          <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IllustrationFlame size={28} />
-          </motion.div>
+          <motion.div animate={{ scale: [1, 1.35, 1], opacity: [1, 0.5, 1] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
           <div>
-            <p style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 600 }}>{streak} dia{streak !== 1 ? 's' : ''} seguidos</p>
+            <p style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 600 }}>
+              <CountUp value={streak} duration={0.8} /> dia{streak !== 1 ? 's' : ''} seguidos
+            </p>
             <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)' }}>dieta completa</p>
           </div>
         </motion.div>
@@ -98,7 +104,7 @@ export default function Dashboard({ plano, dietaPct, streak }) {
         </div>
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px 18px', background: 'var(--card)' }}>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em', marginBottom: 8 }}>PESO ATUAL</p>
-          <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif' }}>{latest ? `${latest.val}kg` : '—'}</p>
+          <p style={{ fontSize: 24, fontFamily: 'Funnel Display, sans-serif' }}>{latest ? <><CountUp value={latest.val} duration={0.9} format={v => v.toFixed(1)} />kg</> : '—'}</p>
           {diff !== null && (
             <p className="mono" style={{ fontSize: 10, marginTop: 3, color: parseFloat(diff) <= 0 ? 'var(--green)' : 'var(--red)', display: 'flex', alignItems: 'center', gap: 3 }}>
               {parseFloat(diff) <= 0 ? <TrendingDown size={11} /> : <TrendingUp size={11} />}
@@ -113,7 +119,7 @@ export default function Dashboard({ plano, dietaPct, streak }) {
         <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '18px 20px', marginBottom: 12, background: 'var(--card)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
             <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.06em' }}>META DIÁRIA</p>
-            <p className="mono" style={{ fontSize: 16, color: 'var(--accent)' }}>{nutri.calorias_totais_dia} kcal</p>
+            <p className="mono" style={{ fontSize: 16, color: 'var(--accent)' }}><CountUp value={nutri.calorias_totais_dia} duration={1} /> kcal</p>
           </div>
           <div style={{ display: 'flex', gap: 16 }}>
             <div><span style={{ fontSize: 13, color: 'var(--text-sub)' }}>P {nutri.proteinas_g}g</span></div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, X, Bell } from 'lucide-react'
-import { getSintomas, saveSintomas, today, precisaCheckinHoje, NIVEL_OPCOES, SONO_OPCOES } from '../lib/sintomas'
+import { salvarSintomas, precisaCheckinHoje, NIVEL_OPCOES, SONO_OPCOES } from '../lib/sintomas'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -31,30 +31,31 @@ function MiniSelector({ label, icon, value, onChange, opcoes }) {
   )
 }
 
-export default function DailyCheckin() {
+export default function DailyCheckin({ userId }) {
   const [visivel, setVisivel] = useState(false)
   const [expandido, setExpandido] = useState(false)
   const [dados, setDados] = useState({ inchaco: null, energia: null, sono: null, notas: '' })
   const [enviado, setEnviado] = useState(false)
 
   useEffect(() => {
-    if (precisaCheckinHoje()) {
-      const t = setTimeout(() => setVisivel(true), 700) // pequeno delay, sensação de "notificação chegando"
-      return () => clearTimeout(t)
-    }
-  }, [])
+    if (!userId) return
+    let ativo = true
+    precisaCheckinHoje(userId).then(precisa => {
+      if (precisa && ativo) {
+        const t = setTimeout(() => setVisivel(true), 700)
+        return () => clearTimeout(t)
+      }
+    })
+    return () => { ativo = false }
+  }, [userId])
 
-  const dismissar = () => {
-    const all = getSintomas()
-    const next = { ...all, [today()]: { ...(all[today()] || {}), dismissed: true } }
-    saveSintomas(next)
+  const dismissar = async () => {
+    await salvarSintomas(userId, { dismissed: true })
     setVisivel(false)
   }
 
-  const enviar = () => {
-    const all = getSintomas()
-    const next = { ...all, [today()]: { ...dados, enviado: true, enviado_em: new Date().toISOString() } }
-    saveSintomas(next)
+  const enviar = async () => {
+    await salvarSintomas(userId, { ...dados, enviado: true })
     setEnviado(true)
     setTimeout(() => setVisivel(false), 1400)
   }

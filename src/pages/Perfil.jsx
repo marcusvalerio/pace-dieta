@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Loader2, Download, Trash2, RefreshCw, ChevronRight } from 'lucide-react'
-import { gerarDieta } from '../lib/groq'
+import { montarPlano } from '../lib/montarPlano'
 import { savePlano, getWeights, getChecked, getCompras } from '../lib/storage'
 import { getSintomasHistorico } from '../lib/sintomas'
 
@@ -101,7 +101,7 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
       restricoes: [...form.restricoes, ...(form.restricaoLivre.trim() ? [form.restricaoLivre.trim()] : [])],
     }
     try {
-      const novoPlano = await gerarDieta(usuario)
+      const novoPlano = montarPlano(usuario)
       await savePlano(userId, novoPlano)
       onPlanoAtualizado(novoPlano, true) // true = mostrar resumo
     } catch (e) {

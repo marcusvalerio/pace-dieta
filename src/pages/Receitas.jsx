@@ -18,7 +18,7 @@ export default function Receitas({ plano }) {
     <div style={{ padding: '0 20px 100px' }}>
       <div style={{ padding: '20px 0 24px' }}>
         <h2 style={{ fontSize: 26, fontWeight: 600 }}>Receitas</h2>
-        <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{principais.length + alts.length} receitas geradas para você</p>
+        <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{principais.length + alts.length} receitas para você</p>
       </div>
 
       {principais.map(([key, texto], i) => (

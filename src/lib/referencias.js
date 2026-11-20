@@ -1,10 +1,10 @@
 // Fontes científicas reais, verificadas — usadas como base do racional nutricional do app.
-// Nunca geradas pela IA (evita links inventados/alucinados).
+// Lista fixa de referências.
 export const REFERENCIAS = [
   {
     titulo: 'Tabela Brasileira de Composição de Alimentos (TACO)',
     autor: 'NEPA/UNICAMP, 4ª edição',
-    desc: 'Referência oficial brasileira de composição nutricional de 597 alimentos in natura e preparações comuns no país. Base para priorizar comida de verdade nas dietas geradas.',
+    desc: 'Referência oficial brasileira de composição nutricional de 597 alimentos in natura e preparações comuns no país. Base para priorizar comida de verdade nos planos.',
     url: 'https://www.nepa.unicamp.br/taco/index.php',
   },
   {

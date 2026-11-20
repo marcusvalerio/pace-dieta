@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Check, Loader2, Info } from 'lucide-react'
-import { gerarDieta } from '../lib/groq'
+import { montarPlano } from '../lib/montarPlano'
 
 const OBJETIVOS = [
   'Perda de gordura',
@@ -159,7 +159,7 @@ export default function Onboarding({ userId, onComplete }) {
     }
 
     try {
-      const plano = await gerarDieta(usuario)
+      const plano = montarPlano(usuario)
       await onComplete(plano)
     } catch (e) {
       setErro(e.message || 'Não foi possível gerar sua dieta. Tente novamente.')

@@ -1,10 +1,9 @@
 import { motion } from 'framer-motion'
-import { LayoutGrid, UtensilsCrossed, ChefHat, ShoppingBag, User } from 'lucide-react'
+import { LayoutGrid, UtensilsCrossed, ShoppingBag, User } from 'lucide-react'
 
 const TABS = [
   { id: 'dashboard', label: 'Painel',   Icon: LayoutGrid },
   { id: 'dieta',     label: 'Dieta',    Icon: UtensilsCrossed },
-  { id: 'receitas',  label: 'Receitas', Icon: ChefHat },
   { id: 'compras',   label: 'Compras',  Icon: ShoppingBag },
   { id: 'perfil',    label: 'Perfil',   Icon: User },
 ]

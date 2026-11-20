@@ -1,3 +1,4 @@
+import { listaDoPlano } from '../lib/planoVazio'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check, ShoppingBag } from 'lucide-react'
@@ -9,10 +10,11 @@ const CAT_LABELS = {
   mercearia: 'Mercearia',
   laticinios_e_ovos: 'Laticínios & Ovos',
   suplementos: 'Suplementos',
+  do_seu_plano: 'Do seu plano',
 }
 
 export default function Compras({ plano, compras, onToggle }) {
-  const lista = plano?.lista_compras || {}
+  const lista = listaDoPlano(plano)
   const categorias = Object.entries(lista).filter(([, items]) => items?.length > 0)
   const [rippleKey, setRippleKey] = useState(null)
 

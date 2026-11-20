@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Check, Loader2, Info } from 'lucide-react'
-import { montarPlano } from '../lib/montarPlano'
+import { planoVazio } from '../lib/planoVazio'
 
 const OBJETIVOS = [
   'Perda de gordura',
@@ -136,16 +136,10 @@ export default function Onboarding({ userId, onComplete }) {
     setD('refeicoes', data.refeicoes.includes(key) ? data.refeicoes.filter(x => x !== key) : [...data.refeicoes, key])
   }
 
-  const totalSteps = 6
+  const totalSteps = 4
 
-  const gerar = async () => {
+  const concluir = async () => {
     setGerando(true)
-    setErro('')
-    const restricoesFinal = [...data.restricoes]
-    if (data.restricaoLivre.trim()) restricoesFinal.push(data.restricaoLivre.trim())
-
-    const refeicoesOrdenadas = REFEICOES_OPCOES.filter(r => data.refeicoes.includes(r.key))
-
     const usuario = {
       nome: data.nome,
       peso: parseFloat(data.peso),
@@ -153,37 +147,14 @@ export default function Onboarding({ userId, onComplete }) {
       idade: parseInt(data.idade),
       objetivo: data.objetivos.join(', '),
       percentual_gordura: data.percentualGordura ? parseFloat(data.percentualGordura) : null,
-      orcamento_mensal: parseFloat(data.orcamento),
-      refeicoes_selecionadas: refeicoesOrdenadas,
-      restricoes: restricoesFinal,
     }
-
+    const chaves = REFEICOES_OPCOES.filter(r => data.refeicoes.includes(r.key)).map(r => r.key)
     try {
-      const plano = montarPlano(usuario)
-      await onComplete(plano)
-    } catch (e) {
-      setErro(e.message || 'Não foi possível gerar sua dieta. Tente novamente.')
+      await onComplete(planoVazio(usuario, chaves))
+    } catch {
+      setErro('Não foi possível salvar. Tente novamente.')
       setGerando(false)
     }
-  }
-
-  if (gerando) {
-    return (
-      <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
-          style={{ marginBottom: 28 }}>
-          <Loader2 size={32} color="var(--accent)" strokeWidth={1.5} />
-        </motion.div>
-        <motion.h2 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }}
-          style={{ fontSize: 24, fontWeight: 600, marginBottom: 10, textAlign: 'center' }}>
-          Montando seu plano.
-        </motion.h2>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35, duration: 0.5 }}
-          className="mono" style={{ fontSize: 12, color: 'var(--text-mute)', letterSpacing: '0.06em', textAlign: 'center' }}>
-          Calculando macros, receitas e lista de compras
-        </motion.p>
-      </div>
-    )
   }
 
   return (
@@ -226,7 +197,7 @@ export default function Onboarding({ userId, onComplete }) {
             {step === 1 && (
               <>
                 <Label>02 · Medidas</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>Alguns números para calcular seus macros.</h2>
+                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>Seus números de hoje, para acompanhar a evolução.</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
                   <div>
                     <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginBottom: 6 }}>PESO (KG)</p>
@@ -266,32 +237,13 @@ export default function Onboarding({ userId, onComplete }) {
               </>
             )}
 
-            {/* STEP 3 — Orçamento */}
+            {/* STEP 3 — Refeições */}
             {step === 3 && (
               <>
-                <Label>04 · Orçamento</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>Quanto você pode investir em alimentação por mês?</h2>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <span style={{ fontSize: 28, fontFamily: 'Funnel Display, sans-serif', color: 'var(--text-sub)' }}>R$</span>
-                  <BigInput type="number" placeholder="0" value={data.orcamento} onChange={e => setD('orcamento', e.target.value)} style={{ fontSize: 40, flex: 1 }} />
-                </div>
-                <div style={{ flex: 1 }} />
-                <NextBtn onClick={() => setStep(4)} disabled={!data.orcamento} />
-              </>
-            )}
-
-            {/* STEP 4 — Refeições */}
-            {step === 4 && (
-              <>
-                <Label>05 · Rotina alimentar</Label>
+                <Label>04 · Rotina alimentar</Label>
                 <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 16, lineHeight: 1.25 }}>Quais refeições você faz no dia?</h2>
 
-                <div style={{ display: 'flex', gap: 10, padding: '13px 14px', borderRadius: 8, background: 'var(--accent-glow)', border: '1px solid var(--accent-dim)', marginBottom: 22 }}>
-                  <Info size={15} color="var(--accent)" style={{ flexShrink: 0, marginTop: 1 }} />
-                  <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.6 }}>
-                    A ciência recomenda entre <strong style={{ color: 'var(--text)' }}>3 a 5 refeições</strong> ao dia. Café da manhã, almoço e janta são essenciais — os demais são opcionais e dependem da sua rotina.
-                  </p>
-                </div>
+                <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 22 }}>Depois você cadastra o que come em cada uma, do jeito que está no seu plano.</p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
                   {REFEICOES_OPCOES.map(r => {
@@ -323,31 +275,11 @@ export default function Onboarding({ userId, onComplete }) {
                 </div>
 
                 <div style={{ flex: 1 }} />
-                <NextBtn onClick={() => setStep(5)} disabled={data.refeicoes.length < 3} />
+                {erro && <p style={{ fontSize: 13, color: '#e57373', marginBottom: 12 }}>{erro}</p>}
+                <NextBtn onClick={concluir} disabled={data.refeicoes.length < 3} label="Montar meu plano" />
               </>
             )}
 
-            {/* STEP 5 — Restrições */}
-            {step === 5 && (
-              <>
-                <Label>06 · Restrições</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 24, lineHeight: 1.25 }}>Alguma preferência ou restrição?</h2>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 24 }}>
-                  {RESTRICOES_COMUNS.map(r => (
-                    <Chip key={r} selected={data.restricoes.includes(r)} onClick={() => toggleRestricao(r)}>{r}</Chip>
-                  ))}
-                </div>
-                <input placeholder="Outra restrição (opcional)" value={data.restricaoLivre} onChange={e => setD('restricaoLivre', e.target.value)} style={{ marginBottom: 8 }} />
-
-                {erro && (
-                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    style={{ fontSize: 13, color: '#e57373', marginTop: 12 }}>{erro}</motion.p>
-                )}
-
-                <div style={{ flex: 1 }} />
-                <NextBtn onClick={gerar} label="Gerar meu plano" />
-              </>
-            )}
           </motion.div>
         </AnimatePresence>
       </div>

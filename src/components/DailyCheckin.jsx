@@ -92,7 +92,7 @@ export default function DailyCheckin({ userId }) {
                   </motion.div>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>Como você está hoje?</p>
-                    <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.5 }}>Leva 10 segundos e ajuda a ajustar seu plano.</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.5 }}>Leva 10 segundos e ajuda a acompanhar sua evolução.</p>
                   </div>
                   <motion.button whileTap={{ scale: 0.85 }} onClick={dismissar}
                     style={{ color: 'var(--text-mute)', display: 'flex', minHeight: 'unset', padding: 2 }}>

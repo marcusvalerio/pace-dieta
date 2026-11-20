@@ -2,10 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Auth from './pages/Auth'
 import Onboarding from './pages/Onboarding'
-import ResumoGeracao from './pages/ResumoGeracao'
 import Dashboard from './pages/Dashboard'
 import Dieta from './pages/Dieta'
-import Receitas from './pages/Receitas'
 import Compras from './pages/Compras'
 import Perfil from './pages/Perfil'
 import NavBar from './components/NavBar'
@@ -42,7 +40,6 @@ export default function App() {
   const [checkedPorDia, setCheckedPorDia] = useState({})
   const [compras, setCompras] = useState({})
   const [celebracoes, setCelebracoes] = useState([])
-  const [mostrarResumo, setMostrarResumo] = useState(false)
   const [tab, setTab] = useState('dashboard')
   const [celebrar, setCelebrar] = useState(false)
   const [dadosCarregados, setDadosCarregados] = useState(false)
@@ -87,15 +84,14 @@ export default function App() {
     savePlano(user.id, novoPlano)
   }, [user])
 
-  const handlePlanoAtualizado = (novoPlano, mostrarResumoFlag) => {
+  const handlePlanoAtualizado = (novoPlano) => {
     setPlano(novoPlano)
-    if (mostrarResumoFlag) { setMostrarResumo(true); setTab('dashboard') }
   }
 
   const handleGeracaoCompleta = async (novoPlano) => {
     setPlano(novoPlano)
     await savePlano(user.id, novoPlano)
-    setMostrarResumo(true)
+    setTab('dieta')
   }
 
   const handleApagarTudo = async () => {
@@ -125,7 +121,6 @@ export default function App() {
   if (!user) return <Auth />
   if (plano === undefined || !dadosCarregados) return <LoadingScreen />
   if (!plano) return <Onboarding userId={user.id} onComplete={handleGeracaoCompleta} />
-  if (mostrarResumo) return <ResumoGeracao plano={plano} onContinue={() => setMostrarResumo(false)} />
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 'var(--safe-top)' }}>
@@ -141,7 +136,6 @@ export default function App() {
             transition={{ duration: 0.45, ease: easeSoft }}>
             {tab === 'dashboard' && <Dashboard plano={plano} dietaPct={dietaPct} streak={streak} userId={user.id} />}
             {tab === 'dieta'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
-            {tab === 'receitas'  && <Receitas plano={plano} />}
             {tab === 'compras'   && <Compras plano={plano} compras={compras} onToggle={toggleCompra} />}
             {tab === 'perfil'    && <Perfil plano={plano} userId={user.id} onPlanoAtualizado={handlePlanoAtualizado} onLogout={logout} onApagarTudo={handleApagarTudo} />}
           </motion.div>

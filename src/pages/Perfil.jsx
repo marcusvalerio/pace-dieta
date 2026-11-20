@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Loader2, Download, Trash2, RefreshCw, ChevronRight } from 'lucide-react'
-import { montarPlano } from '../lib/montarPlano'
+import { Check, Loader2, Download, Trash2, ChevronRight } from 'lucide-react'
+import { sincronizarRefeicoes } from '../lib/planoVazio'
 import { savePlano, getWeights, getChecked, getCompras } from '../lib/storage'
 import { getSintomasHistorico } from '../lib/sintomas'
 
@@ -79,9 +79,9 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
         nome: form.nome, peso: parseFloat(form.peso), altura: parseFloat(form.altura), idade: parseInt(form.idade),
         objetivo: form.objetivos.join(', '),
         percentual_gordura: form.percentualGordura ? parseFloat(form.percentualGordura) : null,
-        orcamento_mensal: parseFloat(form.orcamento),
         restricoes: [...form.restricoes, ...(form.restricaoLivre.trim() ? [form.restricaoLivre.trim()] : [])],
-      }
+      },
+      plano_diario: sincronizarRefeicoes(plano.plano_diario, REFEICOES_OPCOES.filter(r => form.refeicoes.includes(r.key)).map(r => r.key)),
     }
     savePlano(userId, next)
     onPlanoAtualizado(next)
@@ -89,26 +89,7 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
     setTimeout(() => setSalvo(false), 2000)
   }
 
-  const regenerarPlano = async () => {
-    setRegenerando(true)
-    const refeicoesOrdenadas = REFEICOES_OPCOES.filter(r => form.refeicoes.includes(r.key))
-    const usuario = {
-      nome: form.nome, peso: parseFloat(form.peso), altura: parseFloat(form.altura), idade: parseInt(form.idade),
-      objetivo: form.objetivos.join(', '),
-      percentual_gordura: form.percentualGordura ? parseFloat(form.percentualGordura) : null,
-      orcamento_mensal: parseFloat(form.orcamento),
-      refeicoes_selecionadas: refeicoesOrdenadas,
-      restricoes: [...form.restricoes, ...(form.restricaoLivre.trim() ? [form.restricaoLivre.trim()] : [])],
-    }
-    try {
-      const novoPlano = montarPlano(usuario)
-      await savePlano(userId, novoPlano)
-      onPlanoAtualizado(novoPlano, true) // true = mostrar resumo
-    } catch (e) {
-      setRegenerando(false)
-      alert('Não foi possível gerar um novo plano. Tente novamente.')
-    }
-  }
+
 
   const exportarDados = async () => {
     const [pesos, checklist, comp, sintomas] = await Promise.all([
@@ -163,8 +144,6 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
           </div>
         </Field>
 
-        <Field label="Orçamento mensal (R$)"><input type="number" value={form.orcamento} onChange={e => setF('orcamento', e.target.value)} /></Field>
-
         <Field label="Refeições do dia">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {REFEICOES_OPCOES.map(r => (
@@ -191,10 +170,6 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
                 : <motion.span key="save" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Salvar dados</motion.span>
               }
             </AnimatePresence>
-          </motion.button>
-          <motion.button whileTap={{ scale: 0.97 }} onClick={regenerarPlano}
-            style={{ flex: 1, padding: '13px', borderRadius: 6, background: 'linear-gradient(135deg, var(--accent), var(--accent-dim))', border: 'none', color: '#fff', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
-            <RefreshCw size={13} /> Gerar novo plano
           </motion.button>
         </div>
       </div>

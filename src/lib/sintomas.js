@@ -1,22 +1,22 @@
-import { supabase } from './supabase'
+import { dados } from './api'
 
 export function today() { return new Date().toISOString().split('T')[0] }
 
 export async function getSintomasHoje(userId) {
   if (!userId) return null
-  const { data } = await supabase.from('pace_sintomas').select('*').eq('user_id', userId).eq('data', today()).maybeSingle()
-  return data
+  const r = await dados('sintomas', null, `&data=${today()}`).catch(() => [])
+  return r?.[0] || null
 }
 
 export async function getSintomasHistorico(userId, limit = 6) {
   if (!userId) return []
-  const { data } = await supabase.from('pace_sintomas').select('*').eq('user_id', userId).order('data', { ascending: false }).limit(limit)
-  return data || []
+  return dados('sintomas', null, `&limite=${limit}`).catch(() => [])
 }
 
 export async function salvarSintomas(userId, campos) {
   if (!userId) return
-  await supabase.from('pace_sintomas').upsert({ user_id: userId, data: today(), ...campos })
+  const { data: _d, user_id: _u, ...resto } = campos || {}
+  await dados('salvarSintomas', { data: today(), campos: resto }).catch(() => {})
 }
 
 export async function precisaCheckinHoje(userId) {

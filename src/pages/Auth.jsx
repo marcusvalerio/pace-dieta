@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Sprout } from 'lucide-react'
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -26,21 +26,29 @@ export default function Auth() {
   const [form, setForm] = useState({ email: '', password: '' })
   const setF = (k, v) => { setForm(f => ({ ...f, [k]: v })); setError('') }
 
+  const entrar = async (acao) => {
+    try {
+      await api(`auth?acao=${acao}`, { email: form.email, senha: form.password })
+      window.dispatchEvent(new Event('pace-auth'))
+      return null
+    } catch (e) { return e.message }
+  }
+
   const handleLogin = async () => {
     if (!form.email || !form.password) { setError('Preencha e-mail e senha.'); return }
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
+    const error = await entrar('entrar')
     setLoading(false)
-    if (error) setError(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message)
+    if (error) setError(error)
   }
 
   const handleSignup = async () => {
     if (!form.email || !form.password) { setError('Preencha todos os campos.'); return }
     if (form.password.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return }
     setLoading(true)
-    const { error } = await supabase.auth.signUp({ email: form.email, password: form.password })
+    const error = await entrar('cadastrar')
     setLoading(false)
-    if (error) setError(error.message)
+    if (error) setError(error)
   }
 
   const EyeBtn = (

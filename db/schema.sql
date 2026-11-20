@@ -246,3 +246,15 @@ create index on conquistas_paciente (paciente_id);
 create index on mensagens (paciente_id, criada_em);
 create index on assinaturas (usuario_id);
 create index on assinaturas (clinica_id);
+
+-- Dados do app atual (login próprio e estado do paciente) ----------------------
+
+alter table usuarios add column senha_hash text;
+alter table usuarios alter column nome set default '';
+alter table planos add column conteudo jsonb;
+create unique index pesagens_pac_data on pesagens (paciente_id, data);
+create unique index planos_um_ativo on planos (paciente_id) where ativo;
+create table checklist_diario (paciente_id uuid not null references pacientes(id) on delete cascade, data date not null, itens jsonb not null default '{}', primary key (paciente_id, data));
+create table compras_estado (paciente_id uuid primary key references pacientes(id) on delete cascade, itens jsonb not null default '{}', atualizado_em timestamptz not null default now());
+create table sintomas (paciente_id uuid not null references pacientes(id) on delete cascade, data date not null, campos jsonb not null default '{}', primary key (paciente_id, data));
+create table celebracoes (paciente_id uuid not null references pacientes(id) on delete cascade, data date not null, primary key (paciente_id, data));

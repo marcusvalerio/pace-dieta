@@ -1,69 +1,60 @@
-import { supabase } from './supabase'
+import { dados } from './api'
+
+// O usuário vem da sessão no servidor; userId só indica que há alguém logado.
+const tenta = (fn, padrao) => fn().catch(() => padrao)
 
 // ── Plano ──────────────────────────────────────────────
 export async function getPlano(userId) {
   if (!userId) return null
-  const { data } = await supabase.from('pace_planos').select('plano').eq('user_id', userId).maybeSingle()
-  return data?.plano || null
+  return tenta(() => dados('plano'), null)
 }
 export async function savePlano(userId, plano) {
   if (!userId) return
-  await supabase.from('pace_planos').upsert({ user_id: userId, plano, updated_at: new Date().toISOString() })
+  await tenta(() => dados('salvarPlano', { plano }))
 }
 export async function clearPlano(userId) {
   if (!userId) return
-  await supabase.from('pace_planos').delete().eq('user_id', userId)
-  await supabase.from('pace_pesos').delete().eq('user_id', userId)
-  await supabase.from('pace_checklist').delete().eq('user_id', userId)
-  await supabase.from('pace_compras').delete().eq('user_id', userId)
-  await supabase.from('pace_sintomas').delete().eq('user_id', userId)
-  await supabase.from('pace_celebracoes').delete().eq('user_id', userId)
+  await tenta(() => dados('limparPlano', {}))
 }
 
 // ── Checklist diário ───────────────────────────────────
 export async function getChecked(userId) {
   if (!userId) return {}
-  const { data } = await supabase.from('pace_checklist').select('data, itens').eq('user_id', userId)
-  const porDia = {}
-  ;(data || []).forEach(row => { porDia[row.data] = row.itens || {} })
-  return porDia
+  return tenta(() => dados('checklist'), {})
 }
 export async function saveCheckedDia(userId, data, itens) {
   if (!userId) return
-  await supabase.from('pace_checklist').upsert({ user_id: userId, data, itens })
+  await tenta(() => dados('salvarChecklist', { data, itens }))
 }
 
 // ── Lista de compras ───────────────────────────────────
 export async function getCompras(userId) {
   if (!userId) return {}
-  const { data } = await supabase.from('pace_compras').select('itens').eq('user_id', userId).maybeSingle()
-  return data?.itens || {}
+  return tenta(() => dados('compras'), {})
 }
 export async function saveCompras(userId, itens) {
   if (!userId) return
-  await supabase.from('pace_compras').upsert({ user_id: userId, itens, updated_at: new Date().toISOString() })
+  await tenta(() => dados('salvarCompras', { itens }))
 }
 
 // ── Peso ───────────────────────────────────────────────
 export async function getWeights(userId) {
   if (!userId) return []
-  const { data } = await supabase.from('pace_pesos').select('data, valor').eq('user_id', userId).order('data')
-  return (data || []).map(w => ({ date: w.data, val: Number(w.valor) }))
+  return tenta(() => dados('pesos'), [])
 }
 export async function saveWeight(userId, date, val) {
   if (!userId) return
-  await supabase.from('pace_pesos').upsert({ user_id: userId, data: date, valor: val })
+  await tenta(() => dados('salvarPeso', { data: date, valor: val }))
 }
 
 // ── Streak / celebração ────────────────────────────────
 export async function getCelebracoes(userId) {
   if (!userId) return []
-  const { data } = await supabase.from('pace_celebracoes').select('data').eq('user_id', userId)
-  return (data || []).map(c => c.data)
+  return tenta(() => dados('celebracoes'), [])
 }
 export async function marcarCelebrado(userId, date) {
   if (!userId) return
-  await supabase.from('pace_celebracoes').upsert({ user_id: userId, data: date })
+  await tenta(() => dados('celebrar', { data: date }))
 }
 
 // Streak: dias seguidos (terminando hoje ou ontem) com dieta 100% completa

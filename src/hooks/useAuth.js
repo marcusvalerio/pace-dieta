@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 
 export function useAuth() {
   const [user, setUser] = useState(undefined) // undefined = carregando
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-    return () => subscription.unsubscribe()
+    const carregar = () => api('auth?acao=eu').then(r => setUser(r.usuario)).catch(() => setUser(null))
+    carregar()
+    window.addEventListener('pace-auth', carregar)
+    return () => window.removeEventListener('pace-auth', carregar)
   }, [])
 
   const logout = async () => {
-    await supabase.auth.signOut()
+    await api('auth?acao=sair').catch(() => {})
     setUser(null)
   }
 

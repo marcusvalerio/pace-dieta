@@ -3,5 +3,14 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/site",
+      "destination": "/site/index.html"
+    },
+    {
+      "source": "/((?!api/|site).*)",
+      "destination": "/index.html"
+    }
+  ]
 }

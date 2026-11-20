@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Pace: seu plano alimentar, sua lista de compras e seu progresso no mesmo lugar. Com ou sem nutricionista.">
+<meta name="theme-color" content="#0E0E0F">
+<link rel="icon" href="/brand/marca/simbolo-grafite.svg">
+<title>Pace · Comer bem, no seu ritmo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: abertura escura com a aura, depois faixas claras em Névoa; telas reais do app em molduras de celular */
+:root{
+  --nevoa:#F5F4F5; --branco:#FFFFFF; --grafite:#2B2B2B; --texto:#3D3D3D; --sub:#6B686B; --noite:#0E0E0F;
+  --lima:#C2E297; --lima-tinta:#4A6B1F; --ceu:#C5D5EC; --lilas:#D3C5D3; --rosa:#FFE3E2; --linha:#E6E3E6;
+  --titulo:'Space Grotesk', 'Inter', system-ui, sans-serif; --corpo:'Inter', system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nevoa);color:var(--texto);font-family:var(--corpo);font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:var(--titulo);font-weight:700;letter-spacing:-.03em;margin:0;text-wrap:balance;color:var(--grafite)}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:54px;padding:0 26px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;border:0;cursor:pointer;font-family:var(--corpo)}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--lima);outline-offset:3px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+
+/* Abertura */
+.hero{background:var(--noite);color:#F3F1F3;position:relative;overflow:hidden;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 20px)}
+.hero nav{display:flex;align-items:center;justify-content:space-between;padding-block:8px 0}
+.marca{display:flex;align-items:center;gap:10px;font-family:var(--titulo);font-weight:700;font-size:22px;letter-spacing:-.04em;color:#F3F1F3;text-decoration:none}
+.hero nav a.link{color:#CFCBD2;text-decoration:none;font-weight:600;font-size:14px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center;padding-block:56px 0}
+.hero h1{color:#F3F1F3;font-size:clamp(44px,7vw,84px);line-height:.98;letter-spacing:-.05em}
+.hero p.lead{font-size:18px;color:#B9B5BC;max-width:30ch;margin-top:20px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero .ctas .claro{background:#F3F1F3;color:var(--noite)}
+.hero .ctas .contorno{background:transparent;color:#F3F1F3;box-shadow:inset 0 0 0 1.5px #4A474C}
+.hero small{display:block;margin-top:14px;color:#8E8A92;font-size:13px}
+.aura{position:absolute;left:50%;margin-left:-380px;top:-460px;opacity:.4;width:760px;height:760px;pointer-events:none;filter:blur(8px);animation:gira 40s linear infinite}
+.aura span{position:absolute;width:70%;height:70%;border-radius:50%;opacity:.8}
+.aura span:nth-child(1){left:4%;top:8%;background:radial-gradient(circle,#C2E297 0%,#C2E297cc 25%,#C2E29700 70%)}
+.aura span:nth-child(2){right:2%;top:14%;background:radial-gradient(circle,#D3C5D3 0%,#D3C5D3cc 25%,#D3C5D300 70%)}
+.aura span:nth-child(3){left:20%;bottom:2%;background:radial-gradient(circle,#FFE3E2 0%,#FFE3E2cc 25%,#FFE3E200 70%)}
+.aura span:nth-child(4){right:14%;bottom:12%;background:radial-gradient(circle,#C5D5EC 0%,#C5D5ECcc 25%,#C5D5EC00 70%)}
+@keyframes gira{to{transform:rotate(360deg)}}
+.fone{position:relative;width:min(300px,100%);aspect-ratio:390/844;border-radius:44px;background:#000;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.45);margin-inline:auto}
+.fone img{display:block;width:100%;height:100%;object-fit:cover;border-radius:34px}
+.hero-grid{grid-template-columns:minmax(0,1fr);text-align:center;justify-items:center;padding-block:48px 8px}
+.hero p.lead{margin-inline:auto}
+.hero .ctas{justify-content:center}
+.esteira{position:relative;display:flex;flex-direction:column;gap:14px;padding-block:44px 64px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.fila{display:flex;gap:14px;width:max-content;animation:rola var(--t,50s) linear infinite}
+.fila:hover{animation-play-state:paused}
+.tile{flex:none;width:104px;height:104px;border-radius:26px;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
+.tile svg{width:52px;height:52px}
+.tile:hover{transform:translateY(-4px) rotate(-6deg)}
+@keyframes rola{to{transform:translateX(-50%)}}
+@media (max-width:860px){.tile{width:78px;height:78px;border-radius:20px}.tile svg{width:40px;height:40px}.esteira{gap:10px}.fila{gap:10px}}
+@media (prefers-reduced-motion:reduce){.fila{animation:none}}
+
+/* Faixas */
+section.faixa{padding-block:120px 96px}
+section.faixa + section.faixa{padding-top:24px}
+.cab{display:flex;flex-direction:column;gap:12px;max-width:640px;margin-bottom:40px}
+.cab h2{font-size:clamp(32px,4.4vw,52px);line-height:1.02}
+.cab p{color:var(--sub);font-size:17px}
+
+.passos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.passo{display:flex;flex-direction:column;gap:16px;min-width:0}
+.passo .fone{width:100%;padding:7px;border-radius:32px;box-shadow:0 14px 40px rgba(43,43,43,.12)}
+.passo .fone img{border-radius:26px}
+.passo h3{font-size:20px}
+.passo p{font-size:14px;color:var(--sub)}
+.passo .num{font-family:var(--titulo);font-weight:700;font-size:14px;color:var(--lima-tinta)}
+
+.dois{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.cartao{border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cartao h3{font-size:26px}
+.cartao ul{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.cartao li{display:flex;gap:10px;align-items:flex-start}
+.cartao li::before{content:"";flex:none;width:8px;height:8px;border-radius:9px;background:var(--grafite);margin-top:8px}
+.ic-linha{display:flex;gap:8px}
+.ic-linha img{width:34px;height:34px;background:var(--branco);border-radius:12px;padding:5px}
+
+.precos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.preco{background:var(--branco);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.preco.dest{box-shadow:inset 0 0 0 2px var(--grafite)}
+.preco .valor{font-family:var(--titulo);font-weight:700;font-size:44px;letter-spacing:-.04em;color:var(--grafite);line-height:1}
+.preco .valor small{font-family:var(--corpo);font-size:15px;font-weight:500;color:var(--sub);letter-spacing:0}
+.preco .tag{align-self:flex-start;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--lima)}
+.preco p{font-size:14px;color:var(--sub)}
+.nota{margin-top:18px;font-size:13px;color:var(--sub)}
+
+.consult{background:var(--grafite);color:#F3F1F3;border-radius:36px;padding:48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.consult h2{color:#F3F1F3;font-size:clamp(30px,4vw,46px);line-height:1.02}
+.consult p{color:#CFCBD2;margin-top:14px}
+.consult .planos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.consult .pl{background:#3A3A3D;border-radius:20px;padding:18px;text-align:center}
+.consult .pl b{display:block;font-family:var(--titulo);font-size:34px;letter-spacing:-.04em}
+.consult .pl span{font-size:13px;color:#CFCBD2}
+
+.faq{display:flex;flex-direction:column;gap:10px;max-width:760px}
+details{background:var(--branco);border-radius:20px;padding:18px 22px}
+summary{cursor:pointer;font-weight:600;font-size:16px;color:var(--grafite);list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";font-family:var(--titulo);font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin-top:10px;color:var(--sub);font-size:15px}
+
+footer{padding-block:40px 56px;border-top:1px solid var(--linha);font-size:14px;color:var(--sub)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer a{color:var(--texto)}
+.rascunho{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--grafite);color:#fff;font-size:12px;font-weight:600;padding:8px 14px;border-radius:999px;z-index:5}
+
+@media (max-width:860px){
+  .hero-grid{grid-template-columns:1fr;padding-top:36px}
+  .hero .fone{width:240px;margin-bottom:-90px}
+  .passos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dois,.precos,.consult{grid-template-columns:1fr}
+  .consult{padding:32px 24px}
+  .aura{right:-300px;bottom:-200px}
+}
+@media (max-width:420px){ .passos{grid-template-columns:1fr} .passo .fone{width:70%;margin-inline:auto} }
+@media (prefers-reduced-motion:reduce){ .aura{animation:none} }
+
+/* Cosmos: hero do símbolo com aura viva, órbita de alimentos e mergulho pela folha */
+.cosmos{height:300vh;position:relative;background:var(--noite);margin-top:calc(-1 * env(safe-area-inset-top,0px))}
+.palco{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.portal-fundo{position:absolute;inset:0;background:var(--nevoa);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding-inline:20px}
+.portal-fundo h2{font-size:clamp(48px,10vw,150px);line-height:.92;letter-spacing:-.06em}
+.portal-fundo h2 span{background:linear-gradient(90deg,#9FCB6B,#B9A3C9,#F2A9A5,#93B3E0);-webkit-background-clip:text;background-clip:text;color:transparent}
+#ceu{position:absolute;inset:0;width:100%;height:100%;display:block}
+.orbita{position:absolute;inset:0;pointer-events:none}
+.orbita img{position:absolute;left:0;top:0;width:64px;height:64px;will-change:transform,opacity,filter}
+.topo{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));z-index:3}
+.topo .link{color:#CFCBD2;text-decoration:none;font-weight:600;font-size:14px}
+.titulo-cosmos{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 96px) max(24px,env(safe-area-inset-right,0px)) 44px max(24px,env(safe-area-inset-left,0px));pointer-events:none;z-index:2}
+.titulo-cosmos h1{color:#F3F1F3;font-size:clamp(46px,9.5vw,148px);line-height:.9;letter-spacing:-.06em;display:flex;flex-direction:column;flex:1;justify-content:space-between;padding-bottom:24px;mix-blend-mode:difference}
+.titulo-cosmos .l2{align-self:flex-end;text-align:right}
+.titulo-cosmos .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
+.claro{background:#F3F1F3;color:var(--noite)}
+.contorno{background:rgba(14,14,15,.4);color:#F3F1F3;box-shadow:inset 0 0 0 1.5px #5A565E;backdrop-filter:blur(8px)}
+.dica{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);color:#8E8A92;font-size:12px;letter-spacing:.14em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2}
+.dica span{width:1.5px;height:28px;background:linear-gradient(#8E8A92,transparent);animation:desce 1.8s ease-in-out infinite}
+@keyframes desce{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* Filme: celular parado, telas trocam com a rolagem */
+.filme{height:400vh;position:relative}
+.filme-palco{position:sticky;top:0;height:100vh;height:100dvh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:48px;max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.fone.grande{width:min(330px,72vw);position:relative}
+.fone.grande img{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);opacity:0;transform:scale(1.04);transition:opacity .6s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.fone.grande img.on{opacity:1;transform:none}
+.filme-textos{position:relative;min-height:340px;display:flex;flex-direction:column;gap:16px}
+.cena{position:absolute;top:40px;left:0;right:0;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .7s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:14px}
+.cena.on{opacity:1;transform:none}
+.cena .n{font-family:var(--titulo);font-weight:700;font-size:14px;color:var(--lima-tinta)}
+.cena h2{font-size:clamp(40px,5.5vw,76px);line-height:.95;letter-spacing:-.05em}
+.cena p{font-size:18px;color:var(--sub);max-width:34ch}
+.trilho{position:absolute;bottom:0;left:0;display:flex;gap:8px}
+.trilho i{width:28px;height:4px;border-radius:9px;background:#DDDADD;transition:background .4s,width .4s}
+.trilho i.on{background:var(--grafite);width:52px}
+@media (max-width:860px){
+  .filme-palco{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:center;gap:20px}
+  .fone.grande{width:min(210px,52vw)}
+  .filme-textos{min-height:230px;text-align:center;align-items:center}
+  .cena{top:28px}.cena p{margin-inline:auto;font-size:16px}
+  .trilho{left:50%;transform:translateX(-50%)}
+  .orbita img{width:44px;height:44px}
+  .dica{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .cosmos{height:100vh} .filme{height:auto} .dica span{animation:none} }
+
+/* Caixa final: logo, letras e alimentos caem e se empilham */
+.caixa-sec{padding-block:24px 96px}
+.caixa{position:relative;margin-inline:max(16px,env(safe-area-inset-left,0px));height:min(86vh,760px);border-radius:40px;background:var(--noite);overflow:hidden;max-width:1240px;margin-left:auto;margin-right:auto}
+.caixa-txt{position:absolute;top:56px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;z-index:2;pointer-events:none;padding-inline:20px}
+.caixa-txt h2{color:#F3F1F3;font-size:clamp(40px,7vw,96px);line-height:.92;letter-spacing:-.05em}
+.caixa-txt .btn{pointer-events:auto}
+.caixa-fisica{position:absolute;inset:0;z-index:1;touch-action:pan-y}
+.caixa-fisica .corpo{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;will-change:transform}
+.caixa-fisica .corpo:active{cursor:grabbing}
+.caixa-fisica .tile2{border-radius:24%}
+.caixa-fisica .tile2 svg{width:52%;height:52%}
+.caixa-fisica .letra{font-family:var(--titulo);font-weight:700;color:#F3F1F3;line-height:1;letter-spacing:-.04em}
+.caixa-modo{position:absolute;left:20px;bottom:16px;z-index:3;display:flex;gap:4px;padding:4px;border-radius:999px;background:#232326}
+.caixa-modo button{height:34px;padding:0 14px;border-radius:999px;border:0;background:transparent;color:#A9A5AC;font:600 13px var(--corpo);cursor:pointer}
+.caixa-modo button[aria-pressed="true"]{background:#F3F1F3;color:#0E0E0F}
+@media (max-width:600px){.caixa-dica{display:none}}
+.caixa-fisica .solto svg{width:100%;height:100%;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.caixa-dica{position:absolute;right:24px;bottom:18px;z-index:2;color:#6E6A72;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0}
+</style>
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="simbolo" viewBox="0 0 100 100"><path fill-rule="evenodd" d="M50 10a40 40 0 1 1 0 80a40 40 0 1 1 0-80ZM24.4 75.6C30.8 43.6 56.4 26 75.6 24.4C69.2 56.4 43.6 74 24.4 75.6Z"/></symbol></defs></svg>
+
+<header class="cosmos" id="topo">
+  <div class="palco">
+    <div class="portal-fundo">
+      <p class="eyebrow">Do outro lado da folha</p>
+      <h2>Seu plano.<br>Seu ritmo.<br><span>Seu Pace.</span></h2>
+    </div>
+    <canvas id="ceu" aria-hidden="true"></canvas>
+    <div class="orbita" id="orbita" aria-hidden="true"></div>
+    <nav class="topo">
+      <a class="marca" href="#topo"><svg width="30" height="30" fill="#C2E297" aria-hidden="true"><use href="#simbolo"/></svg>pace</a>
+      <a class="link" href="#precos">Preços</a>
+    </nav>
+    <div class="titulo-cosmos" id="tituloCosmos">
+      <h1><span class="l1">Comer bem,</span><span class="l2">no seu ritmo.</span></h1>
+      <div class="ctas">
+        <a class="btn claro" href="/">Começar 3 dias grátis</a>
+        <a class="btn contorno" href="#consultorio">Sou nutricionista</a>
+      </div>
+    </div>
+    <div class="dica" id="dica" aria-hidden="true"><span></span>role para entrar</div>
+  </div>
+</header>
+
+<main>
+  <section class="filme" id="filme">
+    <div class="filme-palco">
+      <div class="filme-fone"><div class="fone grande">
+        <img src="plano.jpg" alt="Tela Meu plano" data-i="0" class="on">
+        <img src="hoje.jpg" alt="Tela Hoje" data-i="1">
+        <img src="compras.jpg" alt="Lista de compras" data-i="2">
+        <img src="progresso.jpg" alt="Tela Progresso" data-i="3">
+      </div></div>
+      <div class="filme-textos">
+        <span class="eyebrow">Como funciona</span>
+        <div class="cena on" data-i="0"><span class="n">01</span><h2>Coloque seu plano.</h2><p>Importe o PDF do nutri ou cadastre suas refeições, com suplementos. O Pace não inventa dieta.</p></div>
+        <div class="cena" data-i="1"><span class="n">02</span><h2>Marque o que comeu.</h2><p>Um toque no prato-folha e a refeição está registrada.</p></div>
+        <div class="cena" data-i="2"><span class="n">03</span><h2>Vá ao mercado.</h2><p>A lista sai pronta dos alimentos do seu plano.</p></div>
+        <div class="cena" data-i="3"><span class="n">04</span><h2>Veja a evolução.</h2><p>Quanto você seguiu na semana, sua sequência e a linha do peso.</p></div>
+        <div class="trilho"><i data-i="0" class="on"></i><i data-i="1"></i><i data-i="2"></i><i data-i="3"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa">
+    <div class="wrap">
+      <div class="cab">
+        <span class="eyebrow">Pra quem é</span>
+        <h2>Tem nutri? Ótimo. Não tem? Também serve.</h2>
+      </div>
+      <div class="dois">
+        <div class="cartao" style="background:var(--lima)">
+          <div class="ic-linha"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3c-4 0-7 7-7 11a7 7 0 0 0 14 0c0-4-3-11-7-11z' fill='%23D3C5D3'/%3E%3Cpath d='M9 11c.4-1.6 1.1-2.8 2-3.6' stroke='%235E4566' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt=""><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 5.5C4 13 9 19.5 18.5 19.5c1.3 0 1.6-1.6.4-2.1C12 15.5 8.5 11 8 5.5c-.1-1.3-3.4-1.3-3.5 0z' fill='%23C2E297'/%3E%3Cpath d='M6.2 5.2 5.6 3M18.6 19.4l1.6.9' stroke='%234A6B1F' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt=""></div>
+          <h3>Com nutricionista</h3>
+          <ul><li>O plano chega direto do consultório.</li><li>Seu nutri acompanha o que você seguiu na semana.</li><li>De graça pra você.</li></ul>
+        </div>
+        <div class="cartao" style="background:var(--ceu)">
+          <div class="ic-linha"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5c-3 0-4 4-5 7-1 3-3 4.5-3 7.5a8 8 0 0 0 16 0c0-3-2-4.5-3-7.5-1-3-2-7-5-7z' fill='%23FFE3E2'/%3E%3Ccircle cx='12' cy='16' r='3.2' fill='%23A0453F'/%3E%3C/svg%3E" alt=""><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 7.5c-1.5-1.5-4-1-5 .5L3.5 19.5c-.5.8.2 1.5 1 1l11.5-7c1.5-1 2-3.5.5-5z' fill='%23C2E297'/%3E%3Cpath d='M16.5 7.5l3-4M17 8.5l4-1M15.5 6.5V2.5' stroke='%234A6B1F' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt=""></div>
+          <h3>Por conta própria</h3>
+          <ul><li>Cadastre o plano que você já segue.</li><li>Lista de compras, checklist e progresso.</li><li>3 dias grátis pra testar.</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa" id="precos">
+    <div class="wrap">
+      <div class="cab">
+        <span class="eyebrow">Preços</span>
+        <h2>Simples assim.</h2>
+      </div>
+      <div class="precos">
+        <div class="preco"><span class="tag" style="background:var(--lilas)">Com nutri</span><span class="valor">R$ 0</span><p>Quando seu nutricionista usa o Pace Consultório, o app é grátis pra você.</p></div>
+        <div class="preco"><span class="tag" style="background:var(--rosa)">Mensal</span><span class="valor">R$ 19,90<small> /mês</small></span><p>Todas as funções. Cancele quando quiser.</p></div>
+        <div class="preco dest"><span class="tag">Anual · economize 25%</span><span class="valor">R$ 179,90<small> /ano</small></span><p>Sai por R$ 14,99 por mês.</p></div>
+      </div>
+      <p class="nota">Teste de 3 dias com cartão cadastrado. Nada é cobrado se você cancelar antes.</p>
+    </div>
+  </section>
+
+  <section class="faixa" id="consultorio">
+    <div class="wrap">
+      <div class="consult">
+        <div>
+          <span class="eyebrow" style="color:#A9A5AC">Pace Consultório</span>
+          <h2 style="margin-top:10px">Pra quem cuida da alimentação dos outros.</h2>
+          <p>Envie o plano, acompanhe a adesão de cada paciente e converse sem trocar de app. Seus pacientes usam o Pace de graça.</p>
+        </div>
+        <div class="planos">
+          <div class="pl"><b>10</b><span>pacientes</span></div>
+          <div class="pl"><b>25</b><span>pacientes</span></div>
+          <div class="pl"><b>50</b><span>pacientes</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faixa">
+    <div class="wrap">
+      <div class="cab"><span class="eyebrow">Dúvidas</span><h2>Perguntas frequentes</h2></div>
+      <div class="faq">
+        <details><summary>O Pace monta dieta pra mim?</summary><p>Não. Quem prescreve dieta é o nutricionista. O Pace organiza e acompanha o plano que você já tem.</p></details>
+        <details><summary>Consigo usar o PDF que meu nutri mandou?</summary><p>Sim. Você envia o PDF, confere o que o app leu e salva. O arquivo original fica guardado na sua conta.</p></details>
+        <details><summary>Posso registrar suplementos?</summary><p>Pode. Nome, dose e quando tomar, junto do checklist do dia.</p></details>
+        <details><summary>Meus dados ficam com quem?</summary><p>Com você. Só seu nutri conectado vê, e só se você autorizar. Dá pra exportar ou apagar tudo na sua conta.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="caixa-sec" aria-labelledby="caixaTitulo">
+  <div class="caixa" id="caixa">
+    <div class="caixa-txt">
+      <h2 id="caixaTitulo">Tudo cabe<br>no seu ritmo.</h2>
+      <a class="btn claro" href="/">Começar 3 dias grátis</a>
+    </div>
+    <div class="caixa-fisica" id="fisica" aria-hidden="true"></div>
+        <p class="caixa-dica">arraste e jogue</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span style="display:flex;align-items:center;gap:8px"><svg width="20" height="20" fill="#2B2B2B" aria-hidden="true"><use href="#simbolo"/></svg>Pace</span>
+    <span><a href="#topo">Termos de uso</a> · <a href="#topo">Política de privacidade</a></span>
+  </div>
+</footer>
+
+
+<script>
+(function(){
+  var ICS={"abacate": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Abacate\"><path d=\"M12 2.5c-3 0-4 4-5 7-1 3-3 4.5-3 7.5a8 8 0 0 0 16 0c0-3-2-4.5-3-7.5-1-3-2-7-5-7z\" fill=\"#FFE3E2\" /><circle cx=\"12\" cy=\"16\" r=\"3.2\" fill=\"#A0453F\" /></svg>", "arroz": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Arroz\"><path d=\"M3 12h18a9 9 0 0 1-18 0z\" fill=\"#C5D5EC\" /><circle cx=\"7.5\" cy=\"10\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"10.5\" cy=\"8.6\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"13.8\" cy=\"8.8\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"16.6\" cy=\"10.2\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"12\" cy=\"10.8\" r=\".9\" fill=\"#3B5784\" /></svg>", "aveia": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Aveia\"><path d=\"M6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#C5D5EC\" /><path d=\"M5 4h14v3H5z\" fill=\"#3B5784\" /><path d=\"M9.5 13h5\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" /></svg>", "azeite": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Azeite\"><path d=\"M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3z\" fill=\"#FFE3E2\" /><path d=\"M12 12c1.5 2 2 3 2 4a2 2 0 0 1-4 0c0-1 .5-2 2-4z\" fill=\"#A0453F\" /></svg>", "banana": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Banana\"><path d=\"M4.5 5.5C4 13 9 19.5 18.5 19.5c1.3 0 1.6-1.6.4-2.1C12 15.5 8.5 11 8 5.5c-.1-1.3-3.4-1.3-3.5 0z\" fill=\"#C2E297\" /><path d=\"M6.2 5.2 5.6 3M18.6 19.4l1.6.9\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "batata": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Batata\"><path d=\"M5 9c1-4 6-6 10-5s6 4 5 8-4 8-9 7-7-6-6-10z\" fill=\"#C5D5EC\" /><circle cx=\"9\" cy=\"10\" r=\"1\" fill=\"#3B5784\" /><circle cx=\"14.5\" cy=\"8.5\" r=\"1\" fill=\"#3B5784\" /><circle cx=\"13\" cy=\"15\" r=\"1\" fill=\"#3B5784\" /></svg>", "brocolis": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Brócolis\"><circle cx=\"7.5\" cy=\"9.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"12\" cy=\"6.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"16.5\" cy=\"9.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"12\" cy=\"11\" r=\"4\" fill=\"#C2E297\" /><path d=\"M10 13.5h4l-1 7.5h-2z\" fill=\"#4A6B1F\" /></svg>", "cafe": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Café\"><path d=\"M4 9.5h12v5.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\" fill=\"#EADFCC\" /><path d=\"M16 11.5h1.5a2.5 2.5 0 0 1 0 5H16M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5\" stroke=\"#6B4423\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "carne": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Carne\"><path d=\"M3.5 11c0-4 5-6.5 9.5-5.5 5 1 8.5 4 7.5 8.5-1 5-7 7-11 6-3.5-1-6-5-6-9z\" fill=\"#D3C5D3\" /><path d=\"M14 9.5c2 0 3.2 1.6 2.6 3.4\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /><circle cx=\"9\" cy=\"12\" r=\"1.6\" fill=\"#5E4566\" /></svg>", "castanhas": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Castanhas\"><path d=\"M12 3c4.5 0 8 3.5 8 9s-3.5 9-8 9-8-3.5-8-9 3.5-9 8-9z\" fill=\"#FFE3E2\" /><path d=\"M12 4v16M8.5 8c1 1 1 2.5 0 3.5M15.5 13c-1 1-1 2.5 0 3.5\" stroke=\"#A0453F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "cenoura": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Cenoura\"><path d=\"M15.5 7.5c-1.5-1.5-4-1-5 .5L3.5 19.5c-.5.8.2 1.5 1 1l11.5-7c1.5-1 2-3.5.5-5z\" fill=\"#C2E297\" /><path d=\"M16.5 7.5l3-4M17 8.5l4-1M15.5 6.5V2.5M8 15l1.5 1M11 11.5l1.5 1\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "couve": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Couve\"><path d=\"M12 4c-1 3-6 4-6 10a6 6 0 0 0 12 0c0-6-5-7-6-10z\" fill=\"#C2E297\" /><path d=\"M12 9v11M12 13l-2.5-2M12 16l2.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "feijao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Feijão\"><path d=\"M5 5.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#C5D5EC\" /><path d=\"M12.5 12.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#C5D5EC\" /><path d=\"M7 9.5c1.2 0 2.3-.6 2.8-1.6M14.5 16.5c1.2 0 2.3-.6 2.8-1.6\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "folhas": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Folhas\"><path d=\"M12 21C5 18 3 11 5 3.5c7 0 13.5 4 13.5 11 0 3.5-2.5 6.5-6.5 6.5z\" fill=\"#C2E297\" /><path d=\"M12 21C10.5 15 8.5 10 6 6M10.5 15.5l3-2M8.5 11.5l3-1.5\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "frango": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Frango\"><path d=\"M15 3a6 6 0 0 1 2.5 11l-4.5 1-3-3 1-4.5A6 6 0 0 1 15 3z\" fill=\"#D3C5D3\" /><path d=\"M11 13l-5.5 5.5M4 17a1.6 1.6 0 1 0 2.8 2.8M3.5 19.5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "iogurte": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Iogurte\"><path d=\"M5 9h14l-1.5 10a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7z\" fill=\"#D3C5D3\" /><path d=\"M3.5 9h17M14.5 9l2-6\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "laranja": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Laranja\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#C2E297\" /><path d=\"M12 6c0-2 2-3.5 4.5-3.5C16.5 4.5 14.5 6 12 6z\" fill=\"#4A6B1F\" /></svg>", "leite": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Leite\"><path d=\"M7 8.5 9 4h6l2 4.5V20a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z\" fill=\"#D3C5D3\" /><path d=\"M7 8.5h10M9.5 4l1 4.5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "limao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Limão\"><path d=\"M2.5 12C5 7 9 5 12 5s7 2 9.5 7C19 17 15 19 12 19s-7-2-9.5-7z\" fill=\"#C2E297\" /><path d=\"M8 10.5c1-1.4 2.4-2.2 4-2.4\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "maca": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Maçã\"><path d=\"M12 7c-3-2-8-1-8 5 0 5 3 9 5 9 1.2 0 1.8-.6 3-.6s1.8.6 3 .6c2 0 5-4 5-9 0-6-5-7-8-5z\" fill=\"#C2E297\" /><path d=\"M12 7V4M12 5c1-2 3-2.5 4.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "melancia": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Melancia\"><path d=\"M2.5 9h19a9.5 9.5 0 0 1-19 0z\" fill=\"#C2E297\" /><path d=\"M2.5 9a9.5 9.5 0 0 0 19 0\" stroke=\"#4A6B1F\" stroke-width=\"2\" fill=\"none\" /><circle cx=\"8.5\" cy=\"12\" r=\"1\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"14\" r=\"1\" fill=\"#4A6B1F\" /><circle cx=\"15.5\" cy=\"12\" r=\"1\" fill=\"#4A6B1F\" /></svg>", "milho": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Milho\"><path d=\"M12 2.5c3 0 4.5 4 4.5 9s-1.5 8-4.5 8-4.5-3-4.5-8 1.5-9 4.5-9z\" fill=\"#C2E297\" /><path d=\"M9.8 8h4.4M9.5 11.5h5M9.8 15h4.4\" stroke=\"#4A6B1F\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><path d=\"M12 21.5c-3.5 0-7-3-7-8 2 1 4 3 5 6M12 21.5c3.5 0 7-3 7-8-2 1-4 3-5 6\" fill=\"#4A6B1F\" /></svg>", "morango": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Morango\"><path d=\"M5 9.5c0 5.5 4 11.5 7 11.5s7-6 7-11.5C19 8 18 7 16.5 7h-9C6 7 5 8 5 9.5z\" fill=\"#C2E297\" /><path d=\"M7 7l2.5-3L12 6l2.5-2L17 7\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" /><circle cx=\"9.5\" cy=\"11.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"14.5\" cy=\"11.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"14.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"18\" r=\".9\" fill=\"#4A6B1F\" /></svg>", "ovo-frito": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Ovo frito\"><path d=\"M5 13c-2-4 2-8 6-7 3-3 9-1 8 4 3 3 0 8-4 7-3 3-9 1-10-4z\" fill=\"#D3C5D3\" /><circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"#5E4566\" /></svg>", "ovo": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Ovo\"><path d=\"M12 3c-4 0-7 7-7 11a7 7 0 0 0 14 0c0-4-3-11-7-11z\" fill=\"#D3C5D3\" /><path d=\"M9 11c.4-1.6 1.1-2.8 2-3.6\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "pao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Pão\"><path d=\"M4 11a4 4 0 0 1 2-7h12a4 4 0 0 1 2 7v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z\" fill=\"#C5D5EC\" /><path d=\"M9 8.5l1.2 2.2M13.5 8.5l1.2 2.2\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "peixe": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Peixe\"><path d=\"M2.5 12c3-5 9-7 14-3l4.5-3v12l-4.5-3c-5 4-11 2-14-3z\" fill=\"#D3C5D3\" /><circle cx=\"7.5\" cy=\"11\" r=\"1.3\" fill=\"#5E4566\" /><path d=\"M12 9.5c1 1.5 1 3.5 0 5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "pimentao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Pimentão\"><path d=\"M7 8c-3 1-3.5 6-2 9.5 1 2.5 3.5 3.5 5 3 1-.3 1.4-1 2-1s1 .7 2 1c1.5.5 4-.5 5-3 1.5-3.5 1-8.5-2-9.5-1.5-.5-3 .5-5 .5S8.5 7.5 7 8z\" fill=\"#C2E297\" /><path d=\"M12 8.5V5.5c0-1 1-2 2.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "queijo": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Queijo\"><path d=\"M3 10.5 20 5v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" fill=\"#D3C5D3\" /><circle cx=\"9\" cy=\"14\" r=\"1.6\" fill=\"#5E4566\" /><circle cx=\"15\" cy=\"11.5\" r=\"1.1\" fill=\"#5E4566\" /><circle cx=\"14.5\" cy=\"16\" r=\"1\" fill=\"#5E4566\" /></svg>", "tomate": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Tomate\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#C2E297\" /><path d=\"M8 7l2 1.2L12 5.5l2 2.7L16 7\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" /></svg>", "uva": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Uva\"><circle cx=\"8\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"12.5\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"17\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"10.2\" cy=\"14\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"14.8\" cy=\"14\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"12.5\" cy=\"18.5\" r=\"2.6\" fill=\"#C2E297\" /><path d=\"M12.5 6.5V3M12.5 4.5c1.5-1.5 3.5-1.5 5-1\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "whey": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Whey\"><path d=\"M6 6h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#D3C5D3\" /><path d=\"M5 3h14v3H5z\" fill=\"#5E4566\" /><path d=\"M9.5 12.5h5M9.5 15.5h3\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" /></svg>"};
+  var reduz=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cv=document.getElementById('ceu'),ctx=cv.getContext('2d');
+  var fundo=document.querySelector('.portal-fundo'),cos=document.querySelector('.cosmos'),tit=document.getElementById('tituloCosmos'),dica=document.getElementById('dica'),orb=document.getElementById('orbita');
+  var FOLHA=new Path2D('M24.4 75.6C30.8 43.6 56.4 26 75.6 24.4C69.2 56.4 43.6 74 24.4 75.6Z');
+  var W,H,dpr,mx=0,my=0,tx=0,ty=0;
+  function tam(){dpr=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr}
+  addEventListener('resize',tam);tam();
+  addEventListener('pointermove',function(e){mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5)});
+  // órbitas
+  var nomes=Object.keys(ICS),itens=[];
+  nomes.forEach(function(n,i){
+    var im=new Image();im.alt='';im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(ICS[n]);orb.appendChild(im);
+    var anel=i%3;
+    itens.push({el:im,anel:anel,a:(i/nomes.length)*Math.PI*2*3+anel,vel:(anel==0?.18:anel==1?-.12:.08)*(1+(i%5)*.04),giro:(i%7-3)*.3});
+  });
+  var CORES=['#A9D873','#B79BC9','#F7B3AE','#94B6E6'];
+  function prog(){var r=cos.getBoundingClientRect();var t=-r.top/(r.height-innerHeight);return Math.max(0,Math.min(1,t))}
+  function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+  var t0=performance.now();
+  function quadro(agora){
+    var t=(agora-t0)/1000; if(reduz)t=6;
+    tx+=(mx-tx)*.05;ty+=(my-ty)*.05;
+    var p=reduz?0:prog(), z=Math.min(1,p/.8);
+    var R=Math.min(W,H)*(W<700?.30:.27);
+    var esc=1+Math.pow(z,3.2)*70;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#0E0E0F';ctx.fillRect(0,0,W,H);
+    // estrelas finas
+    ctx.globalAlpha=(1-z)*.5;ctx.fillStyle='#fff';
+    for(var k=0;k<70;k++){var sx=(Math.sin(k*91.7)*.5+.5)*W,sy=(Math.sin(k*47.3+1)*.5+.5)*H;ctx.fillRect(sx+tx*k%9,sy+ty*k%7,1,1)}
+    ctx.globalAlpha=1;
+    var cx=W/2+tx*24*(1-z),cy=H/2+ty*24*(1-z);
+    ctx.save();ctx.translate(cx,cy);ctx.scale(esc,esc);
+    ctx.save();ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.clip();
+    ctx.fillStyle='#1d1b22';ctx.fillRect(-R,-R,2*R,2*R);ctx.globalCompositeOperation='screen';
+    for(var c=0;c<4;c++){
+      var ang=t*(.35+c*.07)+c*1.57,rr=R*.42;
+      var gx=Math.cos(ang)*rr,gy=Math.sin(ang*1.3)*rr;
+      var g=ctx.createRadialGradient(gx,gy,0,gx,gy,R*.95);
+      g.addColorStop(0,CORES[c]);g.addColorStop(.35,CORES[c]+'aa');g.addColorStop(1,CORES[c]+'00');
+      ctx.fillStyle=g;ctx.fillRect(-R,-R,2*R,2*R);
+    }
+    ctx.restore();
+    // folha vazada: portal
+    ctx.save();ctx.globalCompositeOperation='destination-out';ctx.scale(R/40,R/40);ctx.translate(-50,-50);
+    var gira=Math.sin(t*.6)*.04*(1-z);ctx.translate(50,50);ctx.rotate(gira);ctx.translate(-50,-50);
+    ctx.fill(FOLHA);ctx.restore();
+    ctx.restore();
+    // halo
+    if(z<.3){var h=ctx.createRadialGradient(cx,cy,R*.9,cx,cy,R*1.9);h.addColorStop(0,'rgba(194,226,151,'+(.10*(1-z/.3))+')');h.addColorStop(1,'rgba(194,226,151,0)');ctx.fillStyle=h;ctx.beginPath();ctx.arc(cx,cy,R*1.9,0,Math.PI*2);ctx.moveTo(cx+R*.99,cy);ctx.arc(cx,cy,R*.99,0,Math.PI*2,true);ctx.fill('evenodd')}
+    // órbita
+    var fo=Math.max(0,1-p*2.6);
+    itens.forEach(function(o){
+      var a=o.a+t*o.vel, raio=R*(1.45+o.anel*.42), incl=.32+o.anel*.08+ty*.15;
+      var x=Math.cos(a)*raio*(1+z*3), y=Math.sin(a)*raio*incl*(1+z*3), prof=Math.sin(a);
+      var s=(.62+.38*(prof+1)/2)*(1+z*2), atr=prof<0;
+      var px=cx+x+tx*40*(prof+1), py=cy+y+ty*30;
+      o.el.style.transform='translate('+(px-32)+'px,'+(py-32)+'px) scale('+s.toFixed(3)+') rotate('+(t*o.giro*20).toFixed(1)+'deg)';
+      o.el.style.opacity=(fo*(atr?.35+.4*(prof+1):1)).toFixed(3);
+      o.el.style.filter=atr?'blur('+(1.5*(-prof)).toFixed(1)+'px)':'none';
+      o.el.style.zIndex=atr?0:2;
+    });
+    tit.style.opacity=Math.max(0,1-p*3.2);fundo.style.opacity=Math.min(1,Math.max(0,(z-.35)/.3));fundo.style.transform='scale('+(1.25-.25*Math.min(1,z))+')';tit.style.transform='scale('+(1+p*.6)+')';
+    dica.style.opacity=Math.max(0,1-p*10);
+    cv.style.opacity=p>.9?Math.max(0,1-(p-.9)/.08):1;
+    if(!reduz||t<7)requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+  // filme
+  var filme=document.getElementById('filme'),imgs=filme.querySelectorAll('.fone img'),cenas=filme.querySelectorAll('.cena'),barras=filme.querySelectorAll('.trilho i'),atual=-1;
+  function cena(){var r=filme.getBoundingClientRect();var q=Math.max(0,Math.min(.999,-r.top/(r.height-innerHeight)));var i=reduz?0:Math.floor(q*4);if(i===atual)return;atual=i;
+    [imgs,cenas,barras].forEach(function(L){L.forEach(function(e){e.classList.toggle('on',+e.dataset.i===i)})})}
+  addEventListener('scroll',cena,{passive:true});cena();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+(function(){
+  var T=[["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 7c-3-2-8-1-8 5 0 5 3 9 5 9 1.2 0 1.8-.6 3-.6s1.8.6 3 .6c2 0 5-4 5-9 0-6-5-7-8-5z\" fill=\"#FFFFFF\"></path><path d=\"M12 7V4M12 5c1-2 3-2.5 4.5-2\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Maçã"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M4.5 5.5C4 13 9 19.5 18.5 19.5c1.3 0 1.6-1.6.4-2.1C12 15.5 8.5 11 8 5.5c-.1-1.3-3.4-1.3-3.5 0z\" fill=\"#FFFFFF\"></path><path d=\"M6.2 5.2 5.6 3M18.6 19.4l1.6.9\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Banana"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#FFFFFF\"></circle><path d=\"M12 6c0-2 2-3.5 4.5-3.5C16.5 4.5 14.5 6 12 6z\" fill=\"#0B1B2B\"></path></svg>", "Laranja"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M2.5 12C5 7 9 5 12 5s7 2 9.5 7C19 17 15 19 12 19s-7-2-9.5-7z\" fill=\"#FFFFFF\"></path><path d=\"M8 10.5c1-1.4 2.4-2.2 4-2.4\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Limão"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M5 9.5c0 5.5 4 11.5 7 11.5s7-6 7-11.5C19 8 18 7 16.5 7h-9C6 7 5 8 5 9.5z\" fill=\"#FFFFFF\"></path><path d=\"M7 7l2.5-3L12 6l2.5-2L17 7\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"></path><circle cx=\"9.5\" cy=\"11.5\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"14.5\" cy=\"11.5\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"12\" cy=\"14.5\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"12\" cy=\"18\" r=\".9\" fill=\"#0B1B2B\"></circle></svg>", "Morango"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><circle cx=\"8\" cy=\"9.5\" r=\"2.6\" fill=\"#FFFFFF\"></circle><circle cx=\"12.5\" cy=\"9.5\" r=\"2.6\" fill=\"#FFFFFF\"></circle><circle cx=\"17\" cy=\"9.5\" r=\"2.6\" fill=\"#FFFFFF\"></circle><circle cx=\"10.2\" cy=\"14\" r=\"2.6\" fill=\"#FFFFFF\"></circle><circle cx=\"14.8\" cy=\"14\" r=\"2.6\" fill=\"#FFFFFF\"></circle><circle cx=\"12.5\" cy=\"18.5\" r=\"2.6\" fill=\"#FFFFFF\"></circle><path d=\"M12.5 6.5V3M12.5 4.5c1.5-1.5 3.5-1.5 5-1\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Uva"], ["#FFE3E2", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 2.5c-3 0-4 4-5 7-1 3-3 4.5-3 7.5a8 8 0 0 0 16 0c0-3-2-4.5-3-7.5-1-3-2-7-5-7z\" fill=\"#FFFFFF\"></path><circle cx=\"12\" cy=\"16\" r=\"3.2\" fill=\"#0B1B2B\"></circle></svg>", "Abacate"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M2.5 9h19a9.5 9.5 0 0 1-19 0z\" fill=\"#FFFFFF\"></path><path d=\"M2.5 9a9.5 9.5 0 0 0 19 0\" stroke=\"#0B1B2B\" stroke-width=\"2\" fill=\"none\"></path><circle cx=\"8.5\" cy=\"12\" r=\"1\" fill=\"#0B1B2B\"></circle><circle cx=\"12\" cy=\"14\" r=\"1\" fill=\"#0B1B2B\"></circle><circle cx=\"15.5\" cy=\"12\" r=\"1\" fill=\"#0B1B2B\"></circle></svg>", "Melancia"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M15.5 7.5c-1.5-1.5-4-1-5 .5L3.5 19.5c-.5.8.2 1.5 1 1l11.5-7c1.5-1 2-3.5.5-5z\" fill=\"#FFFFFF\"></path><path d=\"M16.5 7.5l3-4M17 8.5l4-1M15.5 6.5V2.5M8 15l1.5 1M11 11.5l1.5 1\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Cenoura"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><circle cx=\"7.5\" cy=\"9.5\" r=\"4\" fill=\"#FFFFFF\"></circle><circle cx=\"12\" cy=\"6.5\" r=\"4\" fill=\"#FFFFFF\"></circle><circle cx=\"16.5\" cy=\"9.5\" r=\"4\" fill=\"#FFFFFF\"></circle><circle cx=\"12\" cy=\"11\" r=\"4\" fill=\"#FFFFFF\"></circle><path d=\"M10 13.5h4l-1 7.5h-2z\" fill=\"#0B1B2B\"></path></svg>", "Brócolis"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 21C5 18 3 11 5 3.5c7 0 13.5 4 13.5 11 0 3.5-2.5 6.5-6.5 6.5z\" fill=\"#FFFFFF\"></path><path d=\"M12 21C10.5 15 8.5 10 6 6M10.5 15.5l3-2M8.5 11.5l3-1.5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Folhas"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#FFFFFF\"></circle><path d=\"M8 7l2 1.2L12 5.5l2 2.7L16 7\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"></path></svg>", "Tomate"], ["#C5D5EC", "<svg viewBox=\"0 0 24 24\"><path d=\"M5 9c1-4 6-6 10-5s6 4 5 8-4 8-9 7-7-6-6-10z\" fill=\"#FFFFFF\"></path><circle cx=\"9\" cy=\"10\" r=\"1\" fill=\"#0B1B2B\"></circle><circle cx=\"14.5\" cy=\"8.5\" r=\"1\" fill=\"#0B1B2B\"></circle><circle cx=\"13\" cy=\"15\" r=\"1\" fill=\"#0B1B2B\"></circle></svg>", "Batata"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 2.5c3 0 4.5 4 4.5 9s-1.5 8-4.5 8-4.5-3-4.5-8 1.5-9 4.5-9z\" fill=\"#FFFFFF\"></path><path d=\"M9.8 8h4.4M9.5 11.5h5M9.8 15h4.4\" stroke=\"#0B1B2B\" stroke-width=\"1.6\" stroke-linecap=\"round\"></path><path d=\"M12 21.5c-3.5 0-7-3-7-8 2 1 4 3 5 6M12 21.5c3.5 0 7-3 7-8-2 1-4 3-5 6\" fill=\"#0B1B2B\"></path></svg>", "Milho"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M7 8c-3 1-3.5 6-2 9.5 1 2.5 3.5 3.5 5 3 1-.3 1.4-1 2-1s1 .7 2 1c1.5.5 4-.5 5-3 1.5-3.5 1-8.5-2-9.5-1.5-.5-3 .5-5 .5S8.5 7.5 7 8z\" fill=\"#FFFFFF\"></path><path d=\"M12 8.5V5.5c0-1 1-2 2.5-2\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Pimentão"], ["#C2E297", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 4c-1 3-6 4-6 10a6 6 0 0 0 12 0c0-6-5-7-6-10z\" fill=\"#FFFFFF\"></path><path d=\"M12 9v11M12 13l-2.5-2M12 16l2.5-2\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Couve"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 3c-4 0-7 7-7 11a7 7 0 0 0 14 0c0-4-3-11-7-11z\" fill=\"#FFFFFF\"></path><path d=\"M9 11c.4-1.6 1.1-2.8 2-3.6\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Ovo"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M5 13c-2-4 2-8 6-7 3-3 9-1 8 4 3 3 0 8-4 7-3 3-9 1-10-4z\" fill=\"#FFFFFF\"></path><circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"#0B1B2B\"></circle></svg>", "Ovo frito"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M15 3a6 6 0 0 1 2.5 11l-4.5 1-3-3 1-4.5A6 6 0 0 1 15 3z\" fill=\"#FFFFFF\"></path><path d=\"M11 13l-5.5 5.5M4 17a1.6 1.6 0 1 0 2.8 2.8M3.5 19.5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Frango"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M2.5 12c3-5 9-7 14-3l4.5-3v12l-4.5-3c-5 4-11 2-14-3z\" fill=\"#FFFFFF\"></path><circle cx=\"7.5\" cy=\"11\" r=\"1.3\" fill=\"#0B1B2B\"></circle><path d=\"M12 9.5c1 1.5 1 3.5 0 5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Peixe"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M3.5 11c0-4 5-6.5 9.5-5.5 5 1 8.5 4 7.5 8.5-1 5-7 7-11 6-3.5-1-6-5-6-9z\" fill=\"#FFFFFF\"></path><path d=\"M14 9.5c2 0 3.2 1.6 2.6 3.4\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path><circle cx=\"9\" cy=\"12\" r=\"1.6\" fill=\"#0B1B2B\"></circle></svg>", "Carne"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M3 10.5 20 5v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" fill=\"#FFFFFF\"></path><circle cx=\"9\" cy=\"14\" r=\"1.6\" fill=\"#0B1B2B\"></circle><circle cx=\"15\" cy=\"11.5\" r=\"1.1\" fill=\"#0B1B2B\"></circle><circle cx=\"14.5\" cy=\"16\" r=\"1\" fill=\"#0B1B2B\"></circle></svg>", "Queijo"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M7 8.5 9 4h6l2 4.5V20a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z\" fill=\"#FFFFFF\"></path><path d=\"M7 8.5h10M9.5 4l1 4.5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Leite"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M5 9h14l-1.5 10a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7z\" fill=\"#FFFFFF\"></path><path d=\"M3.5 9h17M14.5 9l2-6\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Iogurte"], ["#C5D5EC", "<svg viewBox=\"0 0 24 24\"><path d=\"M3 12h18a9 9 0 0 1-18 0z\" fill=\"#FFFFFF\"></path><circle cx=\"7.5\" cy=\"10\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"10.5\" cy=\"8.6\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"13.8\" cy=\"8.8\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"16.6\" cy=\"10.2\" r=\".9\" fill=\"#0B1B2B\"></circle><circle cx=\"12\" cy=\"10.8\" r=\".9\" fill=\"#0B1B2B\"></circle></svg>", "Arroz"], ["#C5D5EC", "<svg viewBox=\"0 0 24 24\"><path d=\"M5 5.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#FFFFFF\"></path><path d=\"M12.5 12.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#FFFFFF\"></path><path d=\"M7 9.5c1.2 0 2.3-.6 2.8-1.6M14.5 16.5c1.2 0 2.3-.6 2.8-1.6\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Feijão"], ["#C5D5EC", "<svg viewBox=\"0 0 24 24\"><path d=\"M4 11a4 4 0 0 1 2-7h12a4 4 0 0 1 2 7v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z\" fill=\"#FFFFFF\"></path><path d=\"M9 8.5l1.2 2.2M13.5 8.5l1.2 2.2\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Pão"], ["#C5D5EC", "<svg viewBox=\"0 0 24 24\"><path d=\"M6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#FFFFFF\"></path><path d=\"M5 4h14v3H5z\" fill=\"#0B1B2B\"></path><path d=\"M9.5 13h5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\"></path></svg>", "Aveia"], ["#FFE3E2", "<svg viewBox=\"0 0 24 24\"><path d=\"M12 3c4.5 0 8 3.5 8 9s-3.5 9-8 9-8-3.5-8-9 3.5-9 8-9z\" fill=\"#FFFFFF\"></path><path d=\"M12 4v16M8.5 8c1 1 1 2.5 0 3.5M15.5 13c-1 1-1 2.5 0 3.5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Castanhas"], ["#FFE3E2", "<svg viewBox=\"0 0 24 24\"><path d=\"M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3z\" fill=\"#FFFFFF\"></path><path d=\"M12 12c1.5 2 2 3 2 4a2 2 0 0 1-4 0c0-1 .5-2 2-4z\" fill=\"#0B1B2B\"></path></svg>", "Azeite"], ["#EADFCC", "<svg viewBox=\"0 0 24 24\"><path d=\"M4 9.5h12v5.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\" fill=\"#FFFFFF\"></path><path d=\"M16 11.5h1.5a2.5 2.5 0 0 1 0 5H16M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"></path></svg>", "Café"], ["#D3C5D3", "<svg viewBox=\"0 0 24 24\"><path d=\"M6 6h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#FFFFFF\"></path><path d=\"M5 3h14v3H5z\" fill=\"#0B1B2B\"></path><path d=\"M9.5 12.5h5M9.5 15.5h3\" stroke=\"#0B1B2B\" stroke-width=\"2\" stroke-linecap=\"round\"></path></svg>", "Whey"]];
+  var box=document.getElementById('fisica'), caixa=document.getElementById('caixa');
+  if(!box||!window.Matter) return;
+  var P={"abacate": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Abacate\"><path d=\"M12 2.5c-3 0-4 4-5 7-1 3-3 4.5-3 7.5a8 8 0 0 0 16 0c0-3-2-4.5-3-7.5-1-3-2-7-5-7z\" fill=\"#FFE3E2\" /><circle cx=\"12\" cy=\"16\" r=\"3.2\" fill=\"#A0453F\" /></svg>", "arroz": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Arroz\"><path d=\"M3 12h18a9 9 0 0 1-18 0z\" fill=\"#C5D5EC\" /><circle cx=\"7.5\" cy=\"10\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"10.5\" cy=\"8.6\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"13.8\" cy=\"8.8\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"16.6\" cy=\"10.2\" r=\".9\" fill=\"#3B5784\" /><circle cx=\"12\" cy=\"10.8\" r=\".9\" fill=\"#3B5784\" /></svg>", "aveia": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Aveia\"><path d=\"M6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#C5D5EC\" /><path d=\"M5 4h14v3H5z\" fill=\"#3B5784\" /><path d=\"M9.5 13h5\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" /></svg>", "azeite": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Azeite\"><path d=\"M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3z\" fill=\"#FFE3E2\" /><path d=\"M12 12c1.5 2 2 3 2 4a2 2 0 0 1-4 0c0-1 .5-2 2-4z\" fill=\"#A0453F\" /></svg>", "banana": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Banana\"><path d=\"M4.5 5.5C4 13 9 19.5 18.5 19.5c1.3 0 1.6-1.6.4-2.1C12 15.5 8.5 11 8 5.5c-.1-1.3-3.4-1.3-3.5 0z\" fill=\"#C2E297\" /><path d=\"M6.2 5.2 5.6 3M18.6 19.4l1.6.9\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "batata": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Batata\"><path d=\"M5 9c1-4 6-6 10-5s6 4 5 8-4 8-9 7-7-6-6-10z\" fill=\"#C5D5EC\" /><circle cx=\"9\" cy=\"10\" r=\"1\" fill=\"#3B5784\" /><circle cx=\"14.5\" cy=\"8.5\" r=\"1\" fill=\"#3B5784\" /><circle cx=\"13\" cy=\"15\" r=\"1\" fill=\"#3B5784\" /></svg>", "brocolis": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Brócolis\"><circle cx=\"7.5\" cy=\"9.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"12\" cy=\"6.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"16.5\" cy=\"9.5\" r=\"4\" fill=\"#C2E297\" /><circle cx=\"12\" cy=\"11\" r=\"4\" fill=\"#C2E297\" /><path d=\"M10 13.5h4l-1 7.5h-2z\" fill=\"#4A6B1F\" /></svg>", "cafe": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Café\"><path d=\"M4 9.5h12v5.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\" fill=\"#EADFCC\" /><path d=\"M16 11.5h1.5a2.5 2.5 0 0 1 0 5H16M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5\" stroke=\"#6B4423\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "carne": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Carne\"><path d=\"M3.5 11c0-4 5-6.5 9.5-5.5 5 1 8.5 4 7.5 8.5-1 5-7 7-11 6-3.5-1-6-5-6-9z\" fill=\"#D3C5D3\" /><path d=\"M14 9.5c2 0 3.2 1.6 2.6 3.4\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /><circle cx=\"9\" cy=\"12\" r=\"1.6\" fill=\"#5E4566\" /></svg>", "castanhas": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Castanhas\"><path d=\"M12 3c4.5 0 8 3.5 8 9s-3.5 9-8 9-8-3.5-8-9 3.5-9 8-9z\" fill=\"#FFE3E2\" /><path d=\"M12 4v16M8.5 8c1 1 1 2.5 0 3.5M15.5 13c-1 1-1 2.5 0 3.5\" stroke=\"#A0453F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "cenoura": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Cenoura\"><path d=\"M15.5 7.5c-1.5-1.5-4-1-5 .5L3.5 19.5c-.5.8.2 1.5 1 1l11.5-7c1.5-1 2-3.5.5-5z\" fill=\"#C2E297\" /><path d=\"M16.5 7.5l3-4M17 8.5l4-1M15.5 6.5V2.5M8 15l1.5 1M11 11.5l1.5 1\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "couve": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Couve\"><path d=\"M12 4c-1 3-6 4-6 10a6 6 0 0 0 12 0c0-6-5-7-6-10z\" fill=\"#C2E297\" /><path d=\"M12 9v11M12 13l-2.5-2M12 16l2.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "feijao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Feijão\"><path d=\"M5 5.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#C5D5EC\" /><path d=\"M12.5 12.5c3-2 7.5 0 6.5 4s-5.5 5-7.5 3-1.5-5 1-7z\" fill=\"#C5D5EC\" /><path d=\"M7 9.5c1.2 0 2.3-.6 2.8-1.6M14.5 16.5c1.2 0 2.3-.6 2.8-1.6\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "folhas": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Folhas\"><path d=\"M12 21C5 18 3 11 5 3.5c7 0 13.5 4 13.5 11 0 3.5-2.5 6.5-6.5 6.5z\" fill=\"#C2E297\" /><path d=\"M12 21C10.5 15 8.5 10 6 6M10.5 15.5l3-2M8.5 11.5l3-1.5\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "frango": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Frango\"><path d=\"M15 3a6 6 0 0 1 2.5 11l-4.5 1-3-3 1-4.5A6 6 0 0 1 15 3z\" fill=\"#D3C5D3\" /><path d=\"M11 13l-5.5 5.5M4 17a1.6 1.6 0 1 0 2.8 2.8M3.5 19.5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "iogurte": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Iogurte\"><path d=\"M5 9h14l-1.5 10a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7z\" fill=\"#D3C5D3\" /><path d=\"M3.5 9h17M14.5 9l2-6\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "laranja": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Laranja\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#C2E297\" /><path d=\"M12 6c0-2 2-3.5 4.5-3.5C16.5 4.5 14.5 6 12 6z\" fill=\"#4A6B1F\" /></svg>", "leite": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Leite\"><path d=\"M7 8.5 9 4h6l2 4.5V20a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z\" fill=\"#D3C5D3\" /><path d=\"M7 8.5h10M9.5 4l1 4.5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "limao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Limão\"><path d=\"M2.5 12C5 7 9 5 12 5s7 2 9.5 7C19 17 15 19 12 19s-7-2-9.5-7z\" fill=\"#C2E297\" /><path d=\"M8 10.5c1-1.4 2.4-2.2 4-2.4\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "maca": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Maçã\"><path d=\"M12 7c-3-2-8-1-8 5 0 5 3 9 5 9 1.2 0 1.8-.6 3-.6s1.8.6 3 .6c2 0 5-4 5-9 0-6-5-7-8-5z\" fill=\"#C2E297\" /><path d=\"M12 7V4M12 5c1-2 3-2.5 4.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "melancia": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Melancia\"><path d=\"M2.5 9h19a9.5 9.5 0 0 1-19 0z\" fill=\"#C2E297\" /><path d=\"M2.5 9a9.5 9.5 0 0 0 19 0\" stroke=\"#4A6B1F\" stroke-width=\"2\" fill=\"none\" /><circle cx=\"8.5\" cy=\"12\" r=\"1\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"14\" r=\"1\" fill=\"#4A6B1F\" /><circle cx=\"15.5\" cy=\"12\" r=\"1\" fill=\"#4A6B1F\" /></svg>", "milho": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Milho\"><path d=\"M12 2.5c3 0 4.5 4 4.5 9s-1.5 8-4.5 8-4.5-3-4.5-8 1.5-9 4.5-9z\" fill=\"#C2E297\" /><path d=\"M9.8 8h4.4M9.5 11.5h5M9.8 15h4.4\" stroke=\"#4A6B1F\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><path d=\"M12 21.5c-3.5 0-7-3-7-8 2 1 4 3 5 6M12 21.5c3.5 0 7-3 7-8-2 1-4 3-5 6\" fill=\"#4A6B1F\" /></svg>", "morango": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Morango\"><path d=\"M5 9.5c0 5.5 4 11.5 7 11.5s7-6 7-11.5C19 8 18 7 16.5 7h-9C6 7 5 8 5 9.5z\" fill=\"#C2E297\" /><path d=\"M7 7l2.5-3L12 6l2.5-2L17 7\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" /><circle cx=\"9.5\" cy=\"11.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"14.5\" cy=\"11.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"14.5\" r=\".9\" fill=\"#4A6B1F\" /><circle cx=\"12\" cy=\"18\" r=\".9\" fill=\"#4A6B1F\" /></svg>", "ovo-frito": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Ovo frito\"><path d=\"M5 13c-2-4 2-8 6-7 3-3 9-1 8 4 3 3 0 8-4 7-3 3-9 1-10-4z\" fill=\"#D3C5D3\" /><circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"#5E4566\" /></svg>", "ovo": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Ovo\"><path d=\"M12 3c-4 0-7 7-7 11a7 7 0 0 0 14 0c0-4-3-11-7-11z\" fill=\"#D3C5D3\" /><path d=\"M9 11c.4-1.6 1.1-2.8 2-3.6\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "pao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Pão\"><path d=\"M4 11a4 4 0 0 1 2-7h12a4 4 0 0 1 2 7v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z\" fill=\"#C5D5EC\" /><path d=\"M9 8.5l1.2 2.2M13.5 8.5l1.2 2.2\" stroke=\"#3B5784\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "peixe": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Peixe\"><path d=\"M2.5 12c3-5 9-7 14-3l4.5-3v12l-4.5-3c-5 4-11 2-14-3z\" fill=\"#D3C5D3\" /><circle cx=\"7.5\" cy=\"11\" r=\"1.3\" fill=\"#5E4566\" /><path d=\"M12 9.5c1 1.5 1 3.5 0 5\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "pimentao": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Pimentão\"><path d=\"M7 8c-3 1-3.5 6-2 9.5 1 2.5 3.5 3.5 5 3 1-.3 1.4-1 2-1s1 .7 2 1c1.5.5 4-.5 5-3 1.5-3.5 1-8.5-2-9.5-1.5-.5-3 .5-5 .5S8.5 7.5 7 8z\" fill=\"#C2E297\" /><path d=\"M12 8.5V5.5c0-1 1-2 2.5-2\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "queijo": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Queijo\"><path d=\"M3 10.5 20 5v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" fill=\"#D3C5D3\" /><circle cx=\"9\" cy=\"14\" r=\"1.6\" fill=\"#5E4566\" /><circle cx=\"15\" cy=\"11.5\" r=\"1.1\" fill=\"#5E4566\" /><circle cx=\"14.5\" cy=\"16\" r=\"1\" fill=\"#5E4566\" /></svg>", "tomate": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Tomate\"><circle cx=\"12\" cy=\"13.5\" r=\"7.5\" fill=\"#C2E297\" /><path d=\"M8 7l2 1.2L12 5.5l2 2.7L16 7\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" /></svg>", "uva": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Uva\"><circle cx=\"8\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"12.5\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"17\" cy=\"9.5\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"10.2\" cy=\"14\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"14.8\" cy=\"14\" r=\"2.6\" fill=\"#C2E297\" /><circle cx=\"12.5\" cy=\"18.5\" r=\"2.6\" fill=\"#C2E297\" /><path d=\"M12.5 6.5V3M12.5 4.5c1.5-1.5 3.5-1.5 5-1\" stroke=\"#4A6B1F\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\" /></svg>", "whey": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Whey\"><path d=\"M6 6h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z\" fill=\"#D3C5D3\" /><path d=\"M5 3h14v3H5z\" fill=\"#5E4566\" /><path d=\"M9.5 12.5h5M9.5 15.5h3\" stroke=\"#5E4566\" stroke-width=\"2\" stroke-linecap=\"round\" /></svg>"},PN=Object.keys(P),modo='soltos',loop=false;
+  var M=Matter, E=M.Engine.create({gravity:{y:1.1}}), W=E.world, corpos=[], iniciou=false;
+  var reduz=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function limpar(){M.Composite.clear(W,false);corpos.forEach(function(c){c[0].remove()});corpos=[]}
+  function iniciar(){
+    if(iniciou) return; iniciou=true;
+    var w=box.clientWidth,h=box.clientHeight,esc=w<600?.62:1,parede=200;
+    M.Composite.add(W,[
+      M.Bodies.rectangle(w/2,h+parede/2,w*3,parede,{isStatic:true}),
+      M.Bodies.rectangle(-parede/2,h/2,parede,h*4,{isStatic:true}),
+      M.Bodies.rectangle(w+parede/2,h/2,parede,h*4,{isStatic:true})
+    ]);
+    function add(el,body){box.appendChild(el);M.Composite.add(W,body);corpos.push([el,body])}
+    function rnd(a,b){return a+Math.random()*(b-a)}
+    // logo: prato-folha grande
+    var r=86*esc, el=document.createElement('div');el.className='corpo';el.style.width=el.style.height=(2*r)+'px';
+    el.innerHTML='<svg width="100%" height="100%" viewBox="0 0 100 100"><defs><linearGradient id="gcx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C2E297"/><stop offset=".4" stop-color="#D3C5D3"/><stop offset=".7" stop-color="#FFE3E2"/><stop offset="1" stop-color="#C5D5EC"/></linearGradient></defs><path fill-rule="evenodd" fill="url(#gcx)" d="M50 10a40 40 0 1 1 0 80a40 40 0 1 1 0-80ZM24.4 75.6C30.8 43.6 56.4 26 75.6 24.4C69.2 56.4 43.6 74 24.4 75.6Z" transform="translate(50 50) scale(1.25) translate(-50 -50)"/></svg>';
+    add(el,M.Bodies.circle(w*.5,-(w<600?2600:3300),r,{restitution:.35,friction:.4,density:.004}));
+    // letras de pace
+    'pace'.split('').forEach(function(l,i){
+      var s=150*esc,e=document.createElement('div');e.className='corpo letra';e.style.width=(s*.62)+'px';e.style.height=(s*.8)+'px';e.style.fontSize=s+'px';e.textContent=l;
+      add(e,M.Bodies.rectangle(w*(.2+i*.2),-(w<600?1900:2600)-i*120,s*.62,s*.72,{restitution:.3,friction:.5,chamfer:{radius:14}}));
+    });
+    // alimentos
+    var n=w<600?(modo=='soltos'?26:20):(modo=='soltos'?44:32);
+    for(var i=0;i<n;i++){
+      var d=document.createElement('div'),sz;
+      if(modo=='soltos'){
+        var nm=PN[i%PN.length];sz=rnd(84,124)*esc;
+        d.className='corpo solto';d.style.width=d.style.height=sz+'px';d.innerHTML=P[nm];
+        add(d,M.Bodies.circle(rnd(sz,w-sz),-100-i*55,sz*.4,{restitution:.45,friction:.3,frictionAir:.004}));
+      } else {
+        var t=T[i%T.length];sz=rnd(78,108)*esc;
+        d.className='corpo tile2';d.style.width=d.style.height=sz+'px';d.style.background=t[0];d.title=t[2];d.innerHTML=t[1];
+        add(d,M.Bodies.rectangle(rnd(sz,w-sz),-100-i*70,sz,sz,{chamfer:{radius:sz*.24},restitution:.25,friction:.5,angle:rnd(-.6,.6)}));
+      }
+    }
+    var mouse=M.Mouse.create(box);
+    mouse.element.removeEventListener('mousewheel',mouse.mousewheel);mouse.element.removeEventListener('DOMMouseScroll',mouse.mousewheel);mouse.element.removeEventListener('wheel',mouse.mousewheel);
+    M.Composite.add(W,M.MouseConstraint.create(E,{mouse:mouse,constraint:{stiffness:.2,render:{visible:false}}}));
+    if(reduz){for(var k=0;k<600;k++)M.Engine.update(E,1000/60);desenha();return}
+    if(loop) return; loop=true;
+    var ult=performance.now();
+    (function passo(agora){M.Engine.update(E,Math.min(32,agora-ult));ult=agora;desenha();requestAnimationFrame(passo)})(ult);
+  }
+  function desenha(){corpos.forEach(function(c){var el=c[0],b=c[1];el.style.transform='translate('+(b.position.x-el.offsetWidth/2)+'px,'+(b.position.y-el.offsetHeight/2)+'px) rotate('+b.angle+'rad)'})}
+  new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)iniciar()})},{threshold:.35}).observe(caixa);
+  function trocar(m){modo=m;document.getElementById('mSoltos').setAttribute('aria-pressed',m=='soltos');document.getElementById('mQuadrado').setAttribute('aria-pressed',m!='soltos');limpar();iniciou=false;iniciar()}
+
+})();
+</script>
+
+
+</body>
+</html>

@@ -102,7 +102,7 @@ export default function App() {
     setCelebracoes([])
   }
 
-  const totalItens = Object.values(plano?.plano_diario || {}).reduce((s, m) => s + (m.alimentos?.length || 0), 0)
+  const totalItens = Object.values(plano?.plano_diario || {}).reduce((s, m) => s + (m.alimentos?.length || 0), 0) + (plano?.suplementos?.length || 0)
   const totalChecked = Object.values(checkedHoje).filter(Boolean).length
   const dietaPct = totalItens ? Math.round((totalChecked / totalItens) * 100) : 0
   const streak = calcularStreak(checkedPorDia, totalItens)

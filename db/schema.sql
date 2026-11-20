@@ -258,3 +258,7 @@ create table checklist_diario (paciente_id uuid not null references pacientes(id
 create table compras_estado (paciente_id uuid primary key references pacientes(id) on delete cascade, itens jsonb not null default '{}', atualizado_em timestamptz not null default now());
 create table sintomas (paciente_id uuid not null references pacientes(id) on delete cascade, data date not null, campos jsonb not null default '{}', primary key (paciente_id, data));
 create table celebracoes (paciente_id uuid not null references pacientes(id) on delete cascade, data date not null, primary key (paciente_id, data));
+
+-- Suplementos do plano (cadastrados pelo nutri ou pela própria pessoa; o Pace não indica)
+create table suplementos_plano (id uuid primary key default gen_random_uuid(), plano_id uuid not null references planos(id) on delete cascade, nome text not null, tipo text not null default 'capsula' check (tipo in ('capsula','comprimido','whey','creatina','omega3','vitaminas','gotas','sache','pre-treino')), dose text, quando text, observacao text, ordem smallint not null default 0);
+create index on suplementos_plano (plano_id);

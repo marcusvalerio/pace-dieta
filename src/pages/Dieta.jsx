@@ -4,6 +4,7 @@ import { Check, Pencil, X, Plus, Trash2 } from 'lucide-react'
 import { ordenarRefeicoes, labelRefeicao } from '../lib/refeicoes'
 import { IllustrationCheck } from '../components/Illustrations'
 import { CheckRipple } from '../components/CheckRipple'
+import Suplementos from '../components/Suplementos'
 
 export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
   const refeicoes = plano?.plano_diario || {}
@@ -19,7 +20,7 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
     onToggle(key)
   }
 
-  const totalItens = MEAL_ORDER.reduce((s, m) => s + (refeicoes[m]?.alimentos?.length || 0), 0)
+  const totalItens = MEAL_ORDER.reduce((s, m) => s + (refeicoes[m]?.alimentos?.length || 0), 0) + (plano?.suplementos?.length || 0)
   const totalChecked = Object.values(checked).filter(Boolean).length
   const pct = totalItens ? Math.round((totalChecked / totalItens) * 100) : 0
 
@@ -151,6 +152,8 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
           </motion.div>
         )
       })}
+
+      <Suplementos plano={plano} checked={checked} onToggle={onToggle} onUpdatePlano={onUpdatePlano} />
 
       {pct === 100 && totalItens > 0 && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}

@@ -55,7 +55,7 @@ export default function Onboarding({ onComplete }) {
   const concluir = async () => {
     setSalvando(true); setErro('')
     try {
-      await api('dados?acao=consentir', { dados_saude: d.saude, compartilhar_nutri: d.nutri, novidades_email: d.novidades, versao: 'rascunho' }).catch(() => {})
+      await api('dados?acao=consentir', { dados_saude: d.saude, compartilhar_nutri: d.nutri, novidades_email: d.novidades, versao: '1.0' }).catch(() => {})
       setPasso(5)
     } catch { setErro('Não foi possível salvar. Tente novamente.') }
     setSalvando(false)
@@ -173,7 +173,7 @@ export default function Onboarding({ onComplete }) {
                   </label>
                 ))}
               </div>
-              <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.5 }}>Você pode mudar isso quando quiser em Sua conta.</p>
+              <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.5 }}>Você pode mudar isso quando quiser em Sua conta. Leia a <a href="/privacidade" target="_blank" rel="noreferrer" style={{ color: '#2B2B2B' }}>Política de privacidade</a>.</p>
             </>}
           </motion.div>
         </AnimatePresence>

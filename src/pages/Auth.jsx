@@ -64,7 +64,7 @@ export default function Auth() {
             {cadastro ? 'Já tenho conta' : 'Criar uma conta'}
           </button>
           <div style={{ flex: 1 }} />
-          {cadastro && <p style={{ fontSize: 12, color: 'var(--text-sub)', textAlign: 'center', lineHeight: 1.5 }}>Ao continuar você aceita os Termos de uso e a Política de privacidade.</p>}
+          {cadastro && <p style={{ fontSize: 12, color: 'var(--text-sub)', textAlign: 'center', lineHeight: 1.5 }}>Ao continuar você aceita os <a href="/termos" target="_blank" rel="noreferrer" style={{ color: '#2B2B2B' }}>Termos de uso</a> e a <a href="/privacidade" target="_blank" rel="noreferrer" style={{ color: '#2B2B2B' }}>Política de privacidade</a>.</p>}
         </motion.form>
       </AnimatePresence>
     </div>

@@ -199,6 +199,9 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
         style={{ width: '100%', padding: '13px', borderRadius: 14, border: '1px solid var(--border2)', color: 'var(--text-mute)', fontSize: 13, marginTop: 12, background: 'transparent' }}>
         Sair da conta
       </motion.button>
+      <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-sub)', marginTop: 18 }}>
+        <a href="/termos" target="_blank" rel="noreferrer" style={{ color: 'var(--text)' }}>Termos de uso</a> · <a href="/privacidade" target="_blank" rel="noreferrer" style={{ color: 'var(--text)' }}>Política de privacidade</a>
+      </p>
     </div>
   )
 }

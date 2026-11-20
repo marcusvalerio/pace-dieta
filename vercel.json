@@ -11,6 +11,14 @@
     {
       "source": "/app/:path*",
       "destination": "/app.html"
+    },
+    {
+      "source": "/termos",
+      "destination": "/legal/termos.html"
+    },
+    {
+      "source": "/privacidade",
+      "destination": "/legal/privacidade.html"
     }
   ],
   "redirects": [

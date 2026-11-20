@@ -69,7 +69,7 @@ export default function DailyCheckin({ userId }) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={() => !expandido && dismissar()}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(10,10,10,0.55)', backdropFilter: 'blur(3px)', zIndex: 300 }} />
+            style={{ position: 'fixed', inset: 0, background: 'rgba(43,43,43,0.35)', backdropFilter: 'blur(3px)', zIndex: 300 }} />
 
           <motion.div
             initial={{ opacity: 0, y: -40, scale: 0.94 }}
@@ -116,7 +116,7 @@ export default function DailyCheckin({ userId }) {
                 {enviado ? (
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                     style={{ textAlign: 'center', padding: '20px 0' }}>
-                    <p style={{ fontSize: 16, color: 'var(--accent)', fontFamily: 'Funnel Display, sans-serif' }}>Registro enviado.</p>
+                    <p style={{ fontSize: 16, color: 'var(--accent)', fontFamily: 'Space Grotesk, sans-serif' }}>Registro enviado.</p>
                   </motion.div>
                 ) : (
                   <>

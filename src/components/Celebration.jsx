@@ -15,7 +15,7 @@ export default function Celebration({ show, onDismiss, streak = 1 }) {
           onClick={onDismiss}
           style={{
             position: 'fixed', inset: 0, zIndex: 400,
-            background: 'rgba(10,10,10,0.86)', backdropFilter: 'blur(8px)',
+            background: 'rgba(245,244,245,0.9)', backdropFilter: 'blur(8px)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           }}>
 
@@ -44,7 +44,7 @@ export default function Celebration({ show, onDismiss, streak = 1 }) {
             <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <motion.p initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.5, ease }}
-                style={{ fontSize: 44, fontFamily: 'Funnel Display, sans-serif', color: 'var(--text)', lineHeight: 1 }}>
+                style={{ fontSize: 44, fontFamily: 'Space Grotesk, sans-serif', color: 'var(--text)', lineHeight: 1 }}>
                 <CountUp value={streak} duration={0.9} />
               </motion.p>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
@@ -57,7 +57,7 @@ export default function Celebration({ show, onDismiss, streak = 1 }) {
           <motion.p
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65, duration: 0.5, ease }}
-            style={{ fontSize: 22, fontFamily: 'Funnel Display, sans-serif', color: 'var(--text)', textAlign: 'center' }}>
+            style={{ fontSize: 22, fontFamily: 'Space Grotesk, sans-serif', color: 'var(--text)', textAlign: 'center' }}>
             Dieta completa.
           </motion.p>
           <motion.p

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Loader2, Download, Trash2, ChevronRight } from 'lucide-react'
+import { Check, Download, Trash2, ChevronRight } from 'lucide-react'
 import { sincronizarRefeicoes } from '../lib/planoVazio'
 import { savePlano, getWeights, getChecked, getCompras } from '../lib/storage'
 import { getSintomasHistorico } from '../lib/sintomas'
@@ -44,7 +44,7 @@ function Chip({ selected, onClick, disabled, children }) {
   )
 }
 
-export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onApagarTudo }) {
+export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onApagarTudo, onVoltar }) {
   const u = plano?.usuario || {}
   const [form, setForm] = useState({
     nome: u.nome || '',
@@ -58,7 +58,6 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
     restricoes: (u.restricoes || []).filter(r => RESTRICOES_COMUNS.includes(r)),
     restricaoLivre: (u.restricoes || []).filter(r => !RESTRICOES_COMUNS.includes(r)).join(', '),
   })
-  const [regenerando, setRegenerando] = useState(false)
   const [salvo, setSalvo] = useState(false)
   const [confirmarReset, setConfirmarReset] = useState(false)
   const setF = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -109,22 +108,11 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
     await onApagarTudo()
   }
 
-  if (regenerando) {
-    return (
-      <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }} style={{ marginBottom: 24 }}>
-          <Loader2 size={28} color="var(--accent)" strokeWidth={1.5} />
-        </motion.div>
-        <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif' }}>Gerando novo plano.</p>
-      </div>
-    )
-  }
-
   return (
     <div style={{ padding: '0 20px 100px' }}>
       <div style={{ padding: '20px 0 24px' }}>
-        <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.15em' }}>SEU PERFIL</p>
-        <h2 style={{ fontSize: 26, marginTop: 6 }}>Dados e preferências.</h2>
+        <button onClick={onVoltar} style={{ fontSize: 14, color: 'var(--text-sub)', minHeight: 'unset', padding: '4px 0', marginBottom: 6 }}>‹ Voltar</button>
+        <h1 style={{ fontSize: 28 }}>Sua conta</h1>
       </div>
 
       <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '22px 20px', background: 'var(--card)', marginBottom: 12 }}>

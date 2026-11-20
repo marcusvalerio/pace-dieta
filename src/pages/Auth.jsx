@@ -64,9 +64,9 @@ export default function Auth() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 44, justifyContent: 'center' }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Sprout size={15} color="#0A0A0A" />
+            <Sprout size={15} color="#2B2B2B" />
           </div>
-          <span style={{ fontFamily: 'Funnel Display, sans-serif', fontWeight: 700, fontSize: 20, letterSpacing: '-0.02em' }}>Pace</span>
+          <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 20, letterSpacing: '-0.02em' }}>Pace</span>
         </div>
 
         <AnimatePresence mode="wait">

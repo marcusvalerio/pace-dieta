@@ -48,7 +48,7 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 0 24px' }}>
         <div>
-          <h2 style={{ fontSize: 26 }}>Hoje</h2>
+          <h1 style={{ fontSize: 28 }}>Meu plano</h1>
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{totalChecked}/{totalItens} concluídos</p>
         </div>
         <div style={{ position: 'relative', width: 52, height: 52 }}>
@@ -122,15 +122,15 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
               }
               return (
                 <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => handleToggle(key, isChecked)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer', background: isChecked ? 'rgba(184,147,95,0.03)' : 'transparent' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer', background: isChecked ? '#F7FBF1' : 'transparent' }}>
                   <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <CheckRipple show={rippleKey === key} />
                     <motion.div animate={{
-                      borderColor: isChecked ? 'var(--accent)' : 'var(--border2)',
-                      background: isChecked ? 'var(--accent)' : 'transparent'
+                      borderColor: isChecked ? 'var(--lima)' : 'var(--border2)',
+                      background: isChecked ? 'var(--lima)' : 'transparent'
                     }} transition={{ duration: 0.2 }}
                       style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {isChecked && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
+                      {isChecked && <Check size={13} color="#2B2B2B" strokeWidth={3} />}
                     </motion.div>
                   </div>
                   <span style={{ flex: 1, fontSize: 14, color: isChecked ? 'var(--text-mute)' : 'var(--text)', textDecoration: isChecked ? 'line-through' : 'none', transition: 'color 0.2s' }}>
@@ -162,7 +162,7 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
             <IllustrationCheck size={64} />
           </div>
-          <p style={{ fontSize: 18, fontFamily: 'Funnel Display, sans-serif', color: 'var(--accent)', marginBottom: 6 }}>Dieta completa hoje.</p>
+          <p style={{ fontSize: 18, fontFamily: 'Space Grotesk, sans-serif', color: 'var(--accent)', marginBottom: 6 }}>Dieta completa hoje.</p>
           <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.08em' }}>CONSISTÊNCIA É O CAMINHO</p>
         </motion.div>
       )}

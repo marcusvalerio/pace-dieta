@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Auth from './pages/Auth'
 import Onboarding from './pages/Onboarding'
-import Dashboard from './pages/Dashboard'
+import Hoje from './pages/Hoje'
+import Progresso from './pages/Progresso'
+import RegistroRapido from './components/RegistroRapido'
+import Simbolo from './components/Simbolo'
 import Dieta from './pages/Dieta'
 import Compras from './pages/Compras'
 import Perfil from './pages/Perfil'
@@ -15,6 +18,7 @@ import {
   getChecked, saveCheckedDia,
   getCompras, saveCompras,
   getCelebracoes, marcarCelebrado,
+  getWeights, saveWeight,
   calcularStreak,
 } from './lib/storage'
 
@@ -25,10 +29,9 @@ function today() { return new Date().toISOString().split('T')[0] }
 function LoadingScreen() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.4, repeat: Infinity }}
-        style={{ fontFamily: 'Funnel Display, sans-serif', fontWeight: 700, fontSize: 22, color: 'var(--text)' }}>
-        Pace
-      </motion.span>
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }}>
+        <Simbolo size={44} cor="#2B2B2B" titulo="Carregando" />
+      </motion.div>
     </div>
   )
 }
@@ -40,7 +43,9 @@ export default function App() {
   const [checkedPorDia, setCheckedPorDia] = useState({})
   const [compras, setCompras] = useState({})
   const [celebracoes, setCelebracoes] = useState([])
-  const [tab, setTab] = useState('dashboard')
+  const [tab, setTab] = useState('hoje')
+  const [registro, setRegistro] = useState(false)
+  const [pesos, setPesos] = useState([])
   const [celebrar, setCelebrar] = useState(false)
   const [dadosCarregados, setDadosCarregados] = useState(false)
 
@@ -52,6 +57,7 @@ export default function App() {
       const [p, c, comp, cel] = await Promise.all([
         getPlano(user.id), getChecked(user.id), getCompras(user.id), getCelebracoes(user.id)
       ])
+      getWeights(user.id).then(w => ativo && setPesos(w))
       if (!ativo) return
       setPlano(p)
       setCheckedPorDia(c)
@@ -73,6 +79,19 @@ export default function App() {
     saveCheckedDia(user.id, todayKey, diaAtual)
   }, [checkedHoje, checkedPorDia, todayKey, user])
 
+  const marcarRefeicao = useCallback((mealKey) => {
+    const itens = plano?.plano_diario?.[mealKey]?.alimentos || []
+    const diaAtual = { ...checkedHoje }
+    itens.forEach((_, i) => { diaAtual[`${mealKey}__${i}`] = true })
+    setCheckedPorDia(prev => ({ ...prev, [todayKey]: diaAtual }))
+    saveCheckedDia(user.id, todayKey, diaAtual)
+  }, [checkedHoje, plano, todayKey, user])
+
+  const salvarPeso = useCallback((val) => {
+    setPesos(prev => [...prev.filter(w => w.date !== todayKey), { date: todayKey, val }])
+    saveWeight(user.id, todayKey, val)
+  }, [todayKey, user])
+
   const toggleCompra = useCallback((key) => {
     const next = { ...compras, [key]: !compras[key] }
     setCompras(next)
@@ -91,7 +110,7 @@ export default function App() {
   const handleGeracaoCompleta = async (novoPlano) => {
     setPlano(novoPlano)
     await savePlano(user.id, novoPlano)
-    setTab('dieta')
+    setTab('plano')
   }
 
   const handleApagarTudo = async () => {
@@ -134,14 +153,19 @@ export default function App() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -8, filter: 'blur(2px)' }}
             transition={{ duration: 0.45, ease: easeSoft }}>
-            {tab === 'dashboard' && <Dashboard plano={plano} dietaPct={dietaPct} streak={streak} userId={user.id} />}
-            {tab === 'dieta'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
+            {tab === 'hoje'      && <Hoje plano={plano} checked={checkedHoje} dietaPct={dietaPct} streak={streak}
+              pesoAtual={[...pesos].sort((a, b) => a.date.localeCompare(b.date)).at(-1)?.val}
+              onMarcarRefeicao={marcarRefeicao} onAbrir={setTab} onPerfil={() => setTab('perfil')} />}
+            {tab === 'progresso' && <Progresso checkedPorDia={checkedPorDia} totalItens={totalItens} pesos={pesos} onSalvarPeso={salvarPeso} />}
+            {tab === 'plano'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
             {tab === 'compras'   && <Compras plano={plano} compras={compras} onToggle={toggleCompra} />}
-            {tab === 'perfil'    && <Perfil plano={plano} userId={user.id} onPlanoAtualizado={handlePlanoAtualizado} onLogout={logout} onApagarTudo={handleApagarTudo} />}
+            {tab === 'perfil'    && <Perfil plano={plano} userId={user.id} onPlanoAtualizado={handlePlanoAtualizado} onLogout={logout} onApagarTudo={handleApagarTudo} onVoltar={() => setTab('hoje')} />}
           </motion.div>
         </AnimatePresence>
       </div>
-      <NavBar active={tab} onChange={setTab} />
+      <NavBar active={tab} onChange={setTab} onRegistrar={() => setRegistro(true)} />
+      <RegistroRapido aberto={registro} onFechar={() => setRegistro(false)} plano={plano} checked={checkedHoje}
+        onMarcarRefeicao={marcarRefeicao} onSalvarPeso={salvarPeso} />
     </div>
   )
 }

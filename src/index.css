@@ -1,27 +1,29 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Pace v3 — Aesop-inspired amber */
-  --bg:        #0A0A0A;
-  --card:      #161615;
-  --card2:     #1E1E1D;
-  --border:    #2A2A28;
-  --border2:   #383836;
+  /* Pace · paleta Pomar */
+  --bg:        #F5F4F5;
+  --card:      #FFFFFF;
+  --card2:     #F0EEF0;
+  --border:    #ECEAEC;
+  --border2:   #D6D3D6;
 
-  --text:      #F5F3EE;
-  --text-sub:  #A8A49B;
-  --text-mute: #5C594F;
+  --text:      #3D3D3D;
+  --text-sub:  #6B686B;
+  --text-mute: #8A878A;
 
-  --accent:      #B8935F;
-  --accent-dim:  #7A6142;
-  --accent-glow: rgba(184,147,95,0.14);
+  --accent:      #4A6B1F;
+  --accent-dim:  #D6E9BD;
+  --accent-glow: #E9F3DC;
 
-  --red:   #C41E2D;
-  --green: #6B8E5A;
+  --lima: #C2E297; --ceu: #C5D5EC; --lilas: #D3C5D3; --rosa: #FFE3E2; --grafite: #2B2B2B; --noite: #0B0B0C;
 
-  --radius-sm: 4px;
-  --radius-md: 10px;
-  --radius-lg: 18px;
+  --red:   #A0453F;
+  --green: #4A6B1F;
+
+  --radius-sm: 12px;
+  --radius-md: 22px;
+  --radius-lg: 28px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -37,7 +39,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Gabarito', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -46,19 +48,19 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: 'Funnel Display', sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
 .mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums;
 }
 
-button { font-family: 'Gabarito', sans-serif; cursor: pointer; background: none; border: none; }
+button { font-family: 'Inter', system-ui, sans-serif; cursor: pointer; background: none; border: none; }
 
 input, select, textarea {
-  font-family: 'Gabarito', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
   width: 100%;
   min-height: 50px;

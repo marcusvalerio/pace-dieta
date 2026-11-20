@@ -68,8 +68,8 @@ export default function Suplementos({ plano, checked, onToggle, onUpdatePlano })
         return (
           <motion.div key={i} whileTap={{ scale: 0.99 }} onClick={() => onToggle(key)} role="checkbox" aria-checked={ok}
             style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', cursor: 'pointer' }}>
-            <div style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', borderColor: ok ? 'var(--accent)' : 'var(--border2)', background: ok ? 'var(--accent)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              {ok && <Check size={13} color="#F5F3EE" strokeWidth={3} />}
+            <div style={{ width: 20, height: 20, borderRadius: 6, border: '1.5px solid', borderColor: ok ? 'var(--lima)' : 'var(--border2)', background: ok ? 'var(--lima)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              {ok && <Check size={13} color="#2B2B2B" strokeWidth={3} />}
             </div>
             <img src={icone(s.tipo)} alt="" width={24} height={24} />
             <div style={{ flex: 1 }}>

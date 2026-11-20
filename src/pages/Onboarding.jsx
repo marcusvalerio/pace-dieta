@@ -73,7 +73,7 @@ function BigInput(props) {
   return (
     <input {...props} style={{
       background: 'transparent', border: 'none', borderBottom: '1px solid var(--border2)',
-      borderRadius: 0, padding: '12px 0', fontSize: 28, fontFamily: 'Funnel Display, sans-serif',
+      borderRadius: 0, padding: '12px 0', fontSize: 28, fontFamily: 'Space Grotesk, sans-serif',
       color: 'var(--text)', minHeight: 'unset', transition: 'border-color 0.3s var(--ease)', ...props.style
     }} />
   )
@@ -266,7 +266,7 @@ export default function Onboarding({ userId, onComplete }) {
                           <motion.div animate={{ borderColor: selected ? 'var(--accent)' : 'var(--border2)', background: selected ? 'var(--accent)' : 'transparent' }}
                             transition={{ duration: 0.2 }}
                             style={{ width: 18, height: 18, borderRadius: 5, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {selected && <Check size={11} color="#0A0A0A" strokeWidth={3} />}
+                            {selected && <Check size={11} color="#2B2B2B" strokeWidth={3} />}
                           </motion.div>
                         </div>
                       </motion.button>

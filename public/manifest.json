@@ -1,22 +1,36 @@
 {
-  "name": "Pace — Plano Alimentar",
+  "name": "Pace",
   "short_name": "Pace",
-  "description": "Dieta, receitas e lista de compras geradas por IA",
+  "description": "Seu plano alimentar, sua lista de compras e seu progresso, com ou sem nutricionista.",
   "start_url": "/login",
   "display": "standalone",
-  "background_color": "#0D0D0D",
-  "theme_color": "#0D0D0D",
+  "background_color": "#F5F4F5",
+  "theme_color": "#F5F4F5",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/lima.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

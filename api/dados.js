@@ -75,6 +75,14 @@ export default async function handler(req, res) {
         await sql`insert into sintomas (paciente_id, data, campos) values (${pid}, ${b.data}, ${JSON.stringify(b.campos || {})}::jsonb)
                   on conflict (paciente_id, data) do update set campos = sintomas.campos || excluded.campos`
         return ok()
+      case 'consentir': {
+        const tipos = ['dados_saude', 'compartilhar_nutri', 'novidades_email']
+        for (const t of tipos) {
+          if (typeof b[t] !== 'boolean') continue
+          await sql`insert into consentimentos (usuario_id, tipo, aceito, versao_politica) values (${usuarioId}, ${t}, ${b[t]}, ${String(b.versao || 'rascunho')})`
+        }
+        return ok()
+      }
       default:
         return res.status(400).json({ erro: 'Ação inválida' })
     }

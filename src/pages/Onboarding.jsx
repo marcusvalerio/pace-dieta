@@ -1,287 +1,189 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Check, Loader2, Info } from 'lucide-react'
 import { planoVazio } from '../lib/planoVazio'
+import { api } from '../lib/api'
+import Simbolo from '../components/Simbolo'
+
+const titulo = { fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, letterSpacing: '-0.03em' }
+const campo = { height: 52, borderRadius: 14, border: '1px solid #E0DDE0', background: '#fff', padding: '0 14px', fontSize: 16, color: '#2B2B2B', width: '100%', minWidth: 0 }
+const rotulo = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, color: '#555255' }
 
 const OBJETIVOS = [
-  'Perda de gordura',
-  'Hipertrofia',
-  'Definição muscular',
-  'Manutenção',
-  'Performance esportiva',
-  'Saúde geral',
+  ['Perda de gordura', 'Perder peso', 'com leveza, sem passar fome'],
+  ['Manutenção', 'Manter e comer melhor', 'mais energia e rotina'],
+  ['Hipertrofia', 'Ganhar massa', 'acompanhando treino e proteína'],
+  ['Saúde geral', 'Cuidar da saúde', 'seguir o que o nutri passou'],
 ]
-
-const REFEICOES_OPCOES = [
-  { key: 'cafe_manha',    label: 'Café da manhã',    essencial: true },
-  { key: 'lanche_manha',  label: 'Lanche da manhã',  essencial: false },
-  { key: 'almoco',        label: 'Almoço',           essencial: true },
-  { key: 'lanche_tarde',  label: 'Lanche da tarde',  essencial: false },
-  { key: 'pre_treino',    label: 'Pré-treino',       essencial: false },
-  { key: 'pos_treino',    label: 'Pós-treino',       essencial: false },
-  { key: 'janta',         label: 'Janta',            essencial: true },
-  { key: 'ceia',          label: 'Ceia',             essencial: false },
+const REFEICOES = [
+  ['cafe_manha', 'Café da manhã'], ['lanche_manha', 'Lanche da manhã'], ['almoco', 'Almoço'], ['lanche_tarde', 'Lanche da tarde'],
+  ['pre_treino', 'Pré-treino'], ['pos_treino', 'Pós-treino'], ['janta', 'Janta'], ['ceia', 'Ceia'],
 ]
+const TOTAL = 4
 
-const RESTRICOES_COMUNS = [
-  'Baixo custo',
-  'Praticidade',
-  'Vegetariano',
-  'Sem lactose',
-  'Sem glúten',
-  'Cafeína até 14h',
-  'Sem carne vermelha',
-  'Low carb',
-]
-
-const ease = [0.16, 1, 0.3, 1]
-
-const slide = {
-  initial: { opacity: 0, y: 20, filter: 'blur(2px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
-  exit: { opacity: 0, y: -14, filter: 'blur(2px)' },
-  transition: { duration: 0.55, ease }
+function idadeDe(nasc) {
+  if (!nasc) return null
+  const d = new Date(nasc), h = new Date()
+  let i = h.getFullYear() - d.getFullYear()
+  if (h < new Date(h.getFullYear(), d.getMonth(), d.getDate())) i--
+  return i
 }
 
-function ProgressDots({ step, total }) {
+function Opcao({ ativo, onClick, children }) {
   return (
-    <div style={{ display: 'flex', gap: 6, marginBottom: 40 }}>
-      {Array.from({ length: total }).map((_, i) => (
-        <motion.div key={i}
-          animate={{
-            width: i === step ? 24 : 6,
-            background: i <= step ? 'var(--accent)' : 'var(--border2)'
-          }}
-          transition={{ duration: 0.45, ease }}
-          style={{ height: 6, borderRadius: 3 }}
-        />
-      ))}
-    </div>
-  )
-}
-
-function Label({ children }) {
-  return (
-    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}
-      className="mono" style={{ fontSize: 11, color: 'var(--text-sub)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 14 }}>
+    <button onClick={onClick} aria-pressed={ativo}
+      style={{ flex: 1, height: 48, borderRadius: 14, border: ativo ? 0 : '1px solid #E0DDE0', background: ativo ? '#2B2B2B' : '#fff', color: ativo ? '#fff' : '#2B2B2B', fontWeight: 600, fontSize: 15 }}>
       {children}
-    </motion.p>
+    </button>
   )
 }
 
-function BigInput(props) {
-  return (
-    <input {...props} style={{
-      background: 'transparent', border: 'none', borderBottom: '1px solid var(--border2)',
-      borderRadius: 0, padding: '12px 0', fontSize: 28, fontFamily: 'Space Grotesk, sans-serif',
-      color: 'var(--text)', minHeight: 'unset', transition: 'border-color 0.3s var(--ease)', ...props.style
-    }} />
-  )
-}
-
-function Chip({ selected, onClick, children }) {
-  return (
-    <motion.button whileTap={{ scale: 0.95 }} onClick={onClick}
-      transition={{ duration: 0.1 }}
-      style={{
-        padding: '11px 18px', borderRadius: 6,
-        border: `1px solid ${selected ? 'var(--accent)' : 'var(--border2)'}`,
-        background: selected ? 'var(--accent-glow)' : 'transparent',
-        color: selected ? 'var(--accent)' : 'var(--text-sub)',
-        fontSize: 13, fontWeight: selected ? 500 : 400,
-        cursor: 'pointer', minHeight: 'unset',
-        transition: 'background 0.3s var(--ease-soft), border-color 0.3s var(--ease-soft), color 0.3s var(--ease-soft)',
-      }}>
-      {children}
-    </motion.button>
-  )
-}
-
-function NextBtn({ onClick, disabled, label = 'Continuar' }) {
-  return (
-    <motion.button onClick={onClick} disabled={disabled}
-      whileTap={{ scale: disabled ? 1 : 0.97 }}
-      whileHover={{ opacity: disabled ? 1 : 0.85 }}
-      transition={{ duration: 0.25, ease }}
-      style={{
-        width: '100%', padding: '17px', borderRadius: 6,
-        background: disabled ? 'var(--card)' : 'linear-gradient(135deg, var(--accent), var(--accent-dim))',
-        color: disabled ? 'var(--text-mute)' : '#fff',
-        border: 'none', fontWeight: 500, fontSize: 15,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
-      }}>
-      {label} {!disabled && <ArrowRight size={17} />}
-    </motion.button>
-  )
-}
-
-export default function Onboarding({ userId, onComplete }) {
-  const [step, setStep] = useState(0)
-  const [gerando, setGerando] = useState(false)
+export default function Onboarding({ onComplete }) {
+  const [passo, setPasso] = useState(1)
+  const [d, setD] = useState({ nome: '', sexo: '', nascimento: '', altura: '', peso: '', objetivo: '', refeicoes: ['cafe_manha', 'almoco', 'janta'], saude: false, nutri: true, novidades: false })
   const [erro, setErro] = useState('')
-  const [data, setData] = useState({
-    nome: '', peso: '', altura: '', idade: '',
-    objetivos: [], percentualGordura: '', orcamento: '',
-    refeicoes: ['cafe_manha', 'almoco', 'janta'],
-    restricoes: [], restricaoLivre: ''
-  })
-  const setD = (k, v) => setData(d => ({ ...d, [k]: v }))
+  const [salvando, setSalvando] = useState(false)
+  const set = (k, v) => setD(x => ({ ...x, [k]: v }))
+  const num = v => parseFloat(String(v).replace(',', '.'))
 
-  const toggleObjetivo = (o) => setD('objetivos', data.objetivos.includes(o) ? data.objetivos.filter(x => x !== o) : [...data.objetivos, o])
-  const toggleRestricao = (r) => setD('restricoes', data.restricoes.includes(r) ? data.restricoes.filter(x => x !== r) : [...data.restricoes, r])
-  const toggleRefeicao = (key) => {
-    const opcao = REFEICOES_OPCOES.find(r => r.key === key)
-    if (opcao?.essencial && data.refeicoes.includes(key)) return // não deixa desmarcar essenciais
-    setD('refeicoes', data.refeicoes.includes(key) ? data.refeicoes.filter(x => x !== key) : [...data.refeicoes, key])
-  }
-
-  const totalSteps = 4
+  const podeSeguir = {
+    1: d.nome.trim() && d.sexo && d.nascimento && num(d.altura) > 80 && num(d.peso) > 20,
+    2: !!d.objetivo,
+    3: d.refeicoes.length >= 1,
+    4: d.saude,
+  }[passo]
 
   const concluir = async () => {
-    setGerando(true)
-    const usuario = {
-      nome: data.nome,
-      peso: parseFloat(data.peso),
-      altura: parseFloat(data.altura),
-      idade: parseInt(data.idade),
-      objetivo: data.objetivos.join(', '),
-      percentual_gordura: data.percentualGordura ? parseFloat(data.percentualGordura) : null,
-    }
-    const chaves = REFEICOES_OPCOES.filter(r => data.refeicoes.includes(r.key)).map(r => r.key)
+    setSalvando(true); setErro('')
     try {
-      await onComplete(planoVazio(usuario, chaves))
-    } catch {
-      setErro('Não foi possível salvar. Tente novamente.')
-      setGerando(false)
-    }
+      await api('dados?acao=consentir', { dados_saude: d.saude, compartilhar_nutri: d.nutri, novidades_email: d.novidades, versao: 'rascunho' }).catch(() => {})
+      setPasso(5)
+    } catch { setErro('Não foi possível salvar. Tente novamente.') }
+    setSalvando(false)
   }
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', paddingTop: 'var(--safe-top)' }}>
-      <div style={{ padding: '32px 28px 0', position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-          <p className="mono" style={{ fontSize: 10, color: 'var(--accent)', letterSpacing: '0.2em' }}>PACE</p>
-          <div style={{ width: 14, height: 1, background: 'var(--border2)', transform: 'skewX(-20deg)' }} />
-          <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', letterSpacing: '0.1em' }}>
-            {String(step + 1).padStart(2, '0')} / {String(totalSteps).padStart(2, '0')}
-          </p>
-        </div>
-        {step > 0 && (
-          <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            onClick={() => setStep(s => s - 1)}
-            style={{ position: 'absolute', top: 32, right: 28, color: 'var(--text-mute)', fontSize: 13, minHeight: 'unset' }}>
-            Voltar
-          </motion.button>
-        )}
-      </div>
+  const abrir = async () => {
+    setSalvando(true)
+    const usuario = {
+      nome: d.nome.trim(), sexo: d.sexo, nascimento: d.nascimento, idade: idadeDe(d.nascimento),
+      altura: num(d.altura) / 100, peso: num(d.peso), objetivo: d.objetivo, percentual_gordura: null,
+    }
+    const chaves = REFEICOES.map(r => r[0]).filter(k => d.refeicoes.includes(k))
+    try { await onComplete(planoVazio(usuario, chaves)) } catch { setErro('Não foi possível salvar. Tente novamente.'); setSalvando(false) }
+  }
 
-      <div style={{ flex: 1, padding: '28px 28px 40px', maxWidth: 480, width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
-        <ProgressDots step={step} total={totalSteps} />
+  if (passo === 5) return (
+    <div style={{ minHeight: '100dvh', background: '#0E0E0F', color: '#F3F1F3', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '0 24px calc(40px + var(--safe-bottom))' }}>
+      <motion.div aria-hidden="true" animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+        style={{ position: 'absolute', left: '50%', bottom: -230, width: 520, height: 520, marginLeft: -260, filter: 'blur(10px)' }}>
+        {[['#C2E297', '6%', '8%'], ['#D3C5D3', '30%', '16%'], ['#FFE3E2', '22%', '34%'], ['#C5D5EC', '10%', '28%']].map(([c, l, t], i) => (
+          <div key={i} style={{ position: 'absolute', left: l, top: t, width: '70%', height: '70%', borderRadius: '50%', background: `radial-gradient(circle, ${c} 0%, ${c}cc 25%, ${c}00 70%)`, opacity: 0.85 }} />
+        ))}
+      </motion.div>
+      <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 18, maxWidth: 420, width: '100%', margin: '0 auto', paddingBottom: 120 }}>
+        <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8, ease: [0.3, 1.4, 0.5, 1] }}><Simbolo size={64} /></motion.div>
+        <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ ...titulo, fontSize: 40, lineHeight: 1.05, letterSpacing: '-0.04em' }}>Tudo pronto,<br />{d.nome.trim().split(' ')[0]}.</motion.h1>
+        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} style={{ fontSize: 16, color: '#CFCBD2', lineHeight: 1.5 }}>
+          Agora é só cadastrar o que você come em cada refeição, do jeito que está no seu plano.
+        </motion.p>
+        {erro && <p role="alert" style={{ fontSize: 13, color: '#FFB4AE' }}>{erro}</p>}
+      </div>
+      <button onClick={abrir} disabled={salvando} style={{ position: 'relative', width: '100%', maxWidth: 420, margin: '0 auto', height: 54, borderRadius: 999, background: '#F3F1F3', color: '#0E0E0F', fontWeight: 700, fontSize: 16 }}>
+        {salvando ? 'Um instante…' : 'Montar meu plano'}
+      </button>
+    </div>
+  )
+
+  return (
+    <div style={{ minHeight: '100dvh', background: 'var(--bg)', color: '#2B2B2B', padding: 'calc(40px + var(--safe-top)) 24px calc(32px + var(--safe-bottom))', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {Array.from({ length: TOTAL }, (_, i) => <span key={i} style={{ flex: 1, height: 4, borderRadius: 9, background: i < passo ? '#2B2B2B' : '#DDDADD', transition: 'background .3s' }} />)}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text-sub)' }}>
+          <span>Passo {passo} de {TOTAL}</span>
+          {passo > 1 && <button onClick={() => setPasso(p => p - 1)} style={{ fontSize: 13, color: 'var(--text-sub)' }}>‹ Voltar</button>}
+        </div>
 
         <AnimatePresence mode="wait">
-          <motion.div key={step} {...slide} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-
-            {/* STEP 0 — Identidade */}
-            {step === 0 && (
-              <>
-                <Label>01 · Você</Label>
-                <h2 style={{ fontSize: 32, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>Qual é o seu nome?</h2>
-                <BigInput placeholder="Seu nome" value={data.nome} onChange={e => setD('nome', e.target.value)} autoFocus />
-                <div style={{ flex: 1 }} />
-                <NextBtn onClick={() => setStep(1)} disabled={!data.nome.trim()} />
-              </>
-            )}
-
-            {/* STEP 1 — Medidas */}
-            {step === 1 && (
-              <>
-                <Label>02 · Medidas</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 32, lineHeight: 1.25 }}>Seus números de hoje, para acompanhar a evolução.</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-                  <div>
-                    <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginBottom: 6 }}>PESO (KG)</p>
-                    <BigInput type="number" placeholder="0" value={data.peso} onChange={e => setD('peso', e.target.value)} style={{ fontSize: 24 }} />
-                  </div>
-                  <div>
-                    <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginBottom: 6 }}>ALTURA (M)</p>
-                    <BigInput type="number" step="0.01" placeholder="0.00" value={data.altura} onChange={e => setD('altura', e.target.value)} style={{ fontSize: 24 }} />
-                  </div>
+          <motion.div key={passo} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.28 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {passo === 1 && <>
+              <h1 style={{ ...titulo, fontSize: 30 }}>Sobre você</h1>
+              <p style={{ fontSize: 14, color: '#555255', marginTop: -6 }}>Para acompanhar sua evolução. Ninguém mais vê.</p>
+              <label style={rotulo}>Como quer ser chamado
+                <input value={d.nome} onChange={e => set('nome', e.target.value)} placeholder="Seu nome" autoComplete="given-name" style={campo} />
+              </label>
+              <div style={rotulo}>Sexo biológico
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Opcao ativo={d.sexo === 'feminino'} onClick={() => set('sexo', 'feminino')}>Feminino</Opcao>
+                  <Opcao ativo={d.sexo === 'masculino'} onClick={() => set('sexo', 'masculino')}>Masculino</Opcao>
                 </div>
-                <div>
-                  <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginBottom: 6 }}>IDADE</p>
-                  <BigInput type="number" placeholder="0" value={data.idade} onChange={e => setD('idade', e.target.value)} style={{ fontSize: 24 }} />
-                </div>
-                <div style={{ flex: 1 }} />
-                <NextBtn onClick={() => setStep(2)} disabled={!data.peso || !data.altura || !data.idade} />
-              </>
-            )}
+              </div>
+              <label style={rotulo}>Nascimento
+                <input type="date" value={d.nascimento} onChange={e => set('nascimento', e.target.value)} style={campo} />
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
+                <label style={rotulo}>Altura (cm)<input inputMode="numeric" value={d.altura} onChange={e => set('altura', e.target.value)} placeholder="165" style={campo} /></label>
+                <label style={rotulo}>Peso (kg)<input inputMode="decimal" value={d.peso} onChange={e => set('peso', e.target.value)} placeholder="68,5" style={campo} /></label>
+              </div>
+            </>}
 
-            {/* STEP 2 — Objetivos */}
-            {step === 2 && (
-              <>
-                <Label>03 · Objetivo</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 10, lineHeight: 1.25 }}>O que você quer alcançar?</h2>
-                <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 28 }}>Pode selecionar mais de um.</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 24 }}>
-                  {OBJETIVOS.map(o => (
-                    <Chip key={o} selected={data.objetivos.includes(o)} onClick={() => toggleObjetivo(o)}>{o}</Chip>
-                  ))}
-                </div>
-                <div>
-                  <p className="mono" style={{ fontSize: 10, color: 'var(--text-mute)', marginBottom: 6 }}>% GORDURA CORPORAL (OPCIONAL)</p>
-                  <BigInput type="number" step="0.1" placeholder="—" value={data.percentualGordura} onChange={e => setD('percentualGordura', e.target.value)} style={{ fontSize: 22 }} />
-                </div>
-                <div style={{ flex: 1 }} />
-                <NextBtn onClick={() => setStep(3)} disabled={data.objetivos.length === 0} />
-              </>
-            )}
+            {passo === 2 && <>
+              <h1 style={{ ...titulo, fontSize: 30 }}>Qual seu objetivo?</h1>
+              {OBJETIVOS.map(([v, t, s]) => {
+                const on = d.objetivo === v
+                return (
+                  <button key={v} onClick={() => set('objetivo', v)} aria-pressed={on}
+                    style={{ textAlign: 'left', background: '#fff', borderRadius: 20, padding: '16px 18px', display: 'flex', gap: 14, alignItems: 'center', color: '#2B2B2B', boxShadow: on ? 'inset 0 0 0 2px #2B2B2B' : 'none' }}>
+                    <span style={{ width: 14, height: 14, borderRadius: 99, flexShrink: 0, ...(on ? { background: '#2B2B2B', boxShadow: '0 0 0 4px #C2E297' } : { boxShadow: 'inset 0 0 0 2px #C9C6C9' }) }} />
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}><b style={{ fontSize: 16 }}>{t}</b><span style={{ fontSize: 13, color: '#555255' }}>{s}</span></span>
+                  </button>
+                )
+              })}
+            </>}
 
-            {/* STEP 3 — Refeições */}
-            {step === 3 && (
-              <>
-                <Label>04 · Rotina alimentar</Label>
-                <h2 style={{ fontSize: 28, fontWeight: 600, marginBottom: 16, lineHeight: 1.25 }}>Quais refeições você faz no dia?</h2>
+            {passo === 3 && <>
+              <h1 style={{ ...titulo, fontSize: 30 }}>Sua rotina</h1>
+              <p style={{ fontSize: 14, color: '#555255', marginTop: -6 }}>Quais refeições você faz? Depois você coloca o que come em cada uma.</p>
+              <div style={{ background: '#fff', borderRadius: 20, padding: 8 }}>
+                {REFEICOES.map(([k, l]) => {
+                  const on = d.refeicoes.includes(k)
+                  return (
+                    <button key={k} role="switch" aria-checked={on} onClick={() => set('refeicoes', on ? d.refeicoes.filter(x => x !== k) : [...d.refeicoes, k])}
+                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', fontSize: 15, color: '#2B2B2B' }}>
+                      {l}
+                      <span style={{ width: 44, height: 26, borderRadius: 99, background: on ? '#9FCB6B' : '#E0DDE0', position: 'relative', transition: 'background .2s' }}>
+                        <span style={{ position: 'absolute', top: 3, left: on ? 21 : 3, width: 20, height: 20, borderRadius: 99, background: '#fff', transition: 'left .2s', boxShadow: '0 1px 3px rgba(0,0,0,.15)' }} />
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </>}
 
-                <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 22 }}>Depois você cadastra o que come em cada uma, do jeito que está no seu plano.</p>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
-                  {REFEICOES_OPCOES.map(r => {
-                    const selected = data.refeicoes.includes(r.key)
-                    return (
-                      <motion.button key={r.key} whileTap={{ scale: r.essencial ? 1 : 0.98 }}
-                        onClick={() => toggleRefeicao(r.key)}
-                        style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          padding: '13px 16px', borderRadius: 8,
-                          border: `1px solid ${selected ? 'var(--accent)' : 'var(--border2)'}`,
-                          background: selected ? 'var(--accent-glow)' : 'transparent',
-                          cursor: r.essencial ? 'default' : 'pointer',
-                          opacity: r.essencial ? 0.9 : 1,
-                          transition: 'all 0.25s var(--ease-soft)',
-                        }}>
-                        <span style={{ fontSize: 14, color: selected ? 'var(--accent)' : 'var(--text-sub)' }}>{r.label}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          {r.essencial && <span className="mono" style={{ fontSize: 9, color: 'var(--text-mute)', letterSpacing: '0.05em' }}>ESSENCIAL</span>}
-                          <motion.div animate={{ borderColor: selected ? 'var(--accent)' : 'var(--border2)', background: selected ? 'var(--accent)' : 'transparent' }}
-                            transition={{ duration: 0.2 }}
-                            style={{ width: 18, height: 18, borderRadius: 5, border: '1.5px solid', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {selected && <Check size={11} color="#2B2B2B" strokeWidth={3} />}
-                          </motion.div>
-                        </div>
-                      </motion.button>
-                    )
-                  })}
-                </div>
-
-                <div style={{ flex: 1 }} />
-                {erro && <p style={{ fontSize: 13, color: '#e57373', marginBottom: 12 }}>{erro}</p>}
-                <NextBtn onClick={concluir} disabled={data.refeicoes.length < 3} label="Montar meu plano" />
-              </>
-            )}
-
+            {passo === 4 && <>
+              <h1 style={{ ...titulo, fontSize: 30, lineHeight: 1.1 }}>Seus dados,<br />suas regras</h1>
+              <div style={{ background: '#fff', borderRadius: 20, padding: 16, display: 'flex', flexDirection: 'column', gap: 14, fontSize: 14, lineHeight: 1.45 }}>
+                {[['saude', <><b>Autorizo o uso dos meus dados de saúde</b> (peso, medidas, alimentação) para acompanhar meu plano. <span style={{ color: 'var(--text-sub)' }}>Obrigatório</span></>],
+                  ['nutri', 'Compartilhar com meu nutricionista conectado'],
+                  ['novidades', 'Receber novidades por e-mail']].map(([k, t]) => (
+                  <label key={k} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <input type="checkbox" checked={d[k]} onChange={e => set(k, e.target.checked)} style={{ width: 22, height: 22, minHeight: 0, accentColor: '#2B2B2B', flexShrink: 0, margin: 0, padding: 0 }} />
+                    <span>{t}</span>
+                  </label>
+                ))}
+              </div>
+              <p style={{ fontSize: 12, color: 'var(--text-sub)', lineHeight: 1.5 }}>Você pode mudar isso quando quiser em Sua conta.</p>
+            </>}
           </motion.div>
         </AnimatePresence>
+
+        <div style={{ flex: 1 }} />
+        {erro && <p role="alert" style={{ fontSize: 13, color: 'var(--red)' }}>{erro}</p>}
+        <button disabled={!podeSeguir || salvando} onClick={() => passo < TOTAL ? setPasso(p => p + 1) : concluir()}
+          style={{ height: 54, borderRadius: 999, background: '#2B2B2B', color: '#fff', fontWeight: 600, fontSize: 16, opacity: podeSeguir ? 1 : 0.35, transition: 'opacity .2s' }}>
+          {passo < TOTAL ? 'Continuar' : 'Concluir'}
+        </button>
       </div>
     </div>
   )

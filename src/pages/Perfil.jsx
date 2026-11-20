@@ -31,7 +31,7 @@ function Chip({ selected, onClick, disabled, children }) {
   return (
     <motion.button whileTap={{ scale: disabled ? 1 : 0.95 }} onClick={disabled ? undefined : onClick}
       style={{
-        padding: '9px 14px', borderRadius: 6,
+        padding: '9px 14px', borderRadius: 14,
         border: `1px solid ${selected ? 'var(--accent)' : 'var(--border2)'}`,
         background: selected ? 'var(--accent-glow)' : 'transparent',
         color: selected ? 'var(--accent)' : 'var(--text-sub)',
@@ -115,7 +115,7 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
         <h1 style={{ fontSize: 28 }}>Sua conta</h1>
       </div>
 
-      <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '22px 20px', background: 'var(--card)', marginBottom: 12 }}>
+      <div style={{ borderRadius: 'var(--radius-lg)', padding: '22px 20px', background: 'var(--card)', marginBottom: 12 }}>
         <Field label="Nome"><input value={form.nome} onChange={e => setF('nome', e.target.value)} /></Field>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
@@ -151,7 +151,7 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
           <motion.button whileTap={{ scale: 0.97 }} onClick={salvarSemGerar}
-            style={{ flex: 1, padding: '13px', borderRadius: 6, background: 'var(--card2)', border: '1px solid var(--border2)', color: 'var(--text)', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+            style={{ flex: 1, padding: '13px', borderRadius: 14, background: 'var(--card2)', border: '1px solid var(--border2)', color: 'var(--text)', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
             <AnimatePresence mode="wait">
               {salvo
                 ? <motion.span key="ok" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)' }}><Check size={14} /> Salvo</motion.span>
@@ -163,7 +163,7 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
       </div>
 
       {/* Backup / dados */}
-      <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: 12 }}>
+      <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: 12 }}>
         <motion.button whileTap={{ scale: 0.99 }} onClick={exportarDados}
           style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 18px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -187,16 +187,16 @@ export default function Perfil({ plano, userId, onPlanoAtualizado, onLogout, onA
             <p style={{ fontSize: 13, color: 'var(--text)', marginBottom: 14 }}>Isso apaga seu plano, histórico de peso, checklist e sintomas. Não pode ser desfeito.</p>
             <div style={{ display: 'flex', gap: 10 }}>
               <motion.button whileTap={{ scale: 0.97 }} onClick={() => setConfirmarReset(false)}
-                style={{ flex: 1, padding: '10px', borderRadius: 6, border: '1px solid var(--border2)', color: 'var(--text-sub)', fontSize: 13 }}>Cancelar</motion.button>
+                style={{ flex: 1, padding: '10px', borderRadius: 14, border: '1px solid var(--border2)', color: 'var(--text-sub)', fontSize: 13 }}>Cancelar</motion.button>
               <motion.button whileTap={{ scale: 0.97 }} onClick={apagarTudo}
-                style={{ flex: 1, padding: '10px', borderRadius: 6, background: 'var(--red)', color: '#fff', fontSize: 13, fontWeight: 500 }}>Apagar tudo</motion.button>
+                style={{ flex: 1, padding: '10px', borderRadius: 14, background: 'var(--red)', color: '#fff', fontSize: 13, fontWeight: 500 }}>Apagar tudo</motion.button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <motion.button whileTap={{ scale: 0.97 }} onClick={onLogout}
-        style={{ width: '100%', padding: '13px', borderRadius: 6, border: '1px solid var(--border2)', color: 'var(--text-mute)', fontSize: 13, marginTop: 12, background: 'transparent' }}>
+        style={{ width: '100%', padding: '13px', borderRadius: 14, border: '1px solid var(--border2)', color: 'var(--text-mute)', fontSize: 13, marginTop: 12, background: 'transparent' }}>
         Sair da conta
       </motion.button>
     </div>

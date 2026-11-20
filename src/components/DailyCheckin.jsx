@@ -16,7 +16,7 @@ function MiniSelector({ label, icon, value, onChange, opcoes }) {
         {opcoes.map(o => (
           <motion.button key={o.v} whileTap={{ scale: 0.95 }} onClick={() => onChange(o.v)}
             style={{
-              padding: '8px 4px', borderRadius: 6, textAlign: 'center',
+              padding: '8px 4px', borderRadius: 14, textAlign: 'center',
               border: `1px solid ${value === o.v ? 'var(--accent)' : 'var(--border2)'}`,
               background: value === o.v ? 'var(--accent-glow)' : 'transparent',
               color: value === o.v ? 'var(--accent)' : 'var(--text-mute)',
@@ -102,11 +102,11 @@ export default function DailyCheckin({ userId }) {
 
                 <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
                   <motion.button whileTap={{ scale: 0.97 }} onClick={dismissar}
-                    style={{ flex: 1, padding: '10px', borderRadius: 6, border: '1px solid var(--border2)', color: 'var(--text-sub)', fontSize: 12 }}>
+                    style={{ flex: 1, padding: '10px', borderRadius: 14, border: '1px solid var(--border2)', color: 'var(--text-sub)', fontSize: 12 }}>
                     Agora não
                   </motion.button>
                   <motion.button whileTap={{ scale: 0.97 }} onClick={() => setExpandido(true)}
-                    style={{ flex: 1.4, padding: '10px', borderRadius: 6, background: 'linear-gradient(135deg, var(--accent), var(--accent-dim))', color: '#fff', fontSize: 12, fontWeight: 500 }}>
+                    style={{ flex: 1.4, padding: '10px', borderRadius: 14, background: '#2B2B2B', color: '#fff', fontSize: 12, fontWeight: 500 }}>
                     Preencher agora
                   </motion.button>
                 </div>
@@ -133,7 +133,7 @@ export default function DailyCheckin({ userId }) {
                       rows={2} style={{ resize: 'none', fontSize: 13, marginBottom: 14 }} />
                     <motion.button whileTap={{ scale: podeEnviar ? 0.97 : 1 }} onClick={enviar} disabled={!podeEnviar}
                       style={{
-                        width: '100%', padding: '12px', borderRadius: 6, border: 'none',
+                        width: '100%', padding: '12px', borderRadius: 14, border: 'none',
                         background: podeEnviar ? 'linear-gradient(135deg, var(--accent), var(--accent-dim))' : 'var(--card)',
                         color: podeEnviar ? '#fff' : 'var(--text-mute)', fontSize: 13, fontWeight: 500,
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,

@@ -7,7 +7,7 @@ export default function ReferenciasCard() {
   const [open, setOpen] = useState(false)
 
   return (
-    <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--card)', overflow: 'hidden', marginTop: 12 }}>
+    <div style={{ borderRadius: 'var(--radius-md)', background: 'var(--card)', overflow: 'hidden', marginTop: 12 }}>
       <motion.button whileTap={{ scale: 0.99 }} onClick={() => setOpen(o => !o)}
         style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

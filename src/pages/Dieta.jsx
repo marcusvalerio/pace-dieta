@@ -6,7 +6,7 @@ import { IllustrationCheck } from '../components/Illustrations'
 import { CheckRipple } from '../components/CheckRipple'
 import Suplementos from '../components/Suplementos'
 
-export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
+export default function Dieta({ plano, checked, onToggle, onUpdatePlano, onImportar }) {
   const refeicoes = plano?.plano_diario || {}
   const [editando, setEditando] = useState(null) // mealKey em edição
   const [rippleKey, setRippleKey] = useState(null)
@@ -49,6 +49,7 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 0 24px' }}>
         <div>
           <h1 style={{ fontSize: 28 }}>Meu plano</h1>
+          {onImportar && <button onClick={onImportar} style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', textDecoration: 'underline', minHeight: 'unset', padding: '2px 0' }}>Importar PDF do nutri</button>}
           <p className="mono" style={{ fontSize: 11, color: 'var(--text-mute)', marginTop: 4 }}>{totalChecked}/{totalItens} concluídos</p>
         </div>
         <div style={{ position: 'relative', width: 52, height: 52 }}>
@@ -140,6 +141,13 @@ export default function Dieta({ plano, checked, onToggle, onUpdatePlano }) {
                 </motion.div>
               )
             })}
+
+            {!isEditing && meal.substituicoes?.length > 0 && (
+              <div style={{ margin: '4px 18px 14px', background: 'var(--bg)', borderRadius: 14, padding: '10px 12px', fontSize: 13, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <b style={{ fontSize: 11, color: 'var(--text-sub)', letterSpacing: '.04em' }}>PODE TROCAR POR</b>
+                {meal.substituicoes.map((t, k) => <span key={k}>{t}</span>)}
+              </div>
+            )}
 
             {isEditing && (
               <div style={{ padding: '10px 18px' }}>

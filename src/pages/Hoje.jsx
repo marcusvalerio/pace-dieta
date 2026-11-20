@@ -4,7 +4,7 @@ import { refeicoesDoDia, proximaRefeicao, saudacao, dataCurta } from '../lib/dia
 const rise = i => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { delay: i * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] } })
 const titulo = { fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, letterSpacing: '-0.03em' }
 
-export default function Hoje({ plano, checked, dietaPct, streak, pesoAtual, onMarcarRefeicao, onAbrir, onPerfil }) {
+export default function Hoje({ plano, checked, dietaPct, streak, pesoAtual, onMarcarRefeicao, onAbrir, onPerfil, onImportar }) {
   const nome = plano?.usuario?.nome?.split(' ')[0] || ''
   const lista = refeicoesDoDia(plano, checked)
   const prox = proximaRefeicao(lista)
@@ -47,8 +47,9 @@ export default function Hoje({ plano, checked, dietaPct, streak, pesoAtual, onMa
       {!total && (
         <motion.div {...rise(2)} style={{ background: 'var(--card)', borderRadius: 24, padding: 18, display: 'flex', flexDirection: 'column', gap: 12, boxShadow: 'inset 0 0 0 2px var(--lima)' }}>
           <span style={{ ...titulo, fontSize: 20 }}>Cadastre seu plano</span>
-          <span style={{ fontSize: 14, color: 'var(--text-sub)', lineHeight: 1.5 }}>Coloque o que você come em cada refeição, do jeito que está no seu plano.</span>
-          <button onClick={() => onAbrir('plano')} style={{ height: 46, borderRadius: 999, background: '#2B2B2B', color: '#fff', fontWeight: 600 }}>Abrir meu plano</button>
+          <span style={{ fontSize: 14, color: 'var(--text-sub)', lineHeight: 1.5 }}>Traga o PDF que seu nutricionista passou ou coloque o que você come em cada refeição.</span>
+          <button onClick={onImportar} style={{ height: 46, borderRadius: 999, background: '#2B2B2B', color: '#fff', fontWeight: 600 }}>Importar PDF do nutri</button>
+          <button onClick={() => onAbrir('plano')} style={{ height: 46, borderRadius: 999, background: '#fff', border: '1px solid var(--border2)', color: 'var(--text)', fontWeight: 600 }}>Montar à mão</button>
         </motion.div>
       )}
 

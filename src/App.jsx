@@ -6,6 +6,7 @@ import Hoje from './pages/Hoje'
 import Progresso from './pages/Progresso'
 import RegistroRapido from './components/RegistroRapido'
 import Simbolo from './components/Simbolo'
+import Importar from './pages/Importar'
 import Dieta from './pages/Dieta'
 import Compras from './pages/Compras'
 import Perfil from './pages/Perfil'
@@ -45,6 +46,7 @@ export default function App() {
   const [celebracoes, setCelebracoes] = useState([])
   const [tab, setTab] = useState('hoje')
   const [registro, setRegistro] = useState(false)
+  const [importando, setImportando] = useState(false)
   const [pesos, setPesos] = useState([])
   const [celebrar, setCelebrar] = useState(false)
   const [dadosCarregados, setDadosCarregados] = useState(false)
@@ -155,15 +157,17 @@ export default function App() {
             transition={{ duration: 0.45, ease: easeSoft }}>
             {tab === 'hoje'      && <Hoje plano={plano} checked={checkedHoje} dietaPct={dietaPct} streak={streak}
               pesoAtual={[...pesos].sort((a, b) => a.date.localeCompare(b.date)).at(-1)?.val}
-              onMarcarRefeicao={marcarRefeicao} onAbrir={setTab} onPerfil={() => setTab('perfil')} />}
+              onMarcarRefeicao={marcarRefeicao} onAbrir={setTab} onPerfil={() => setTab('perfil')} onImportar={() => setImportando(true)} />}
             {tab === 'progresso' && <Progresso checkedPorDia={checkedPorDia} totalItens={totalItens} pesos={pesos} onSalvarPeso={salvarPeso} />}
-            {tab === 'plano'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} />}
+            {tab === 'plano'     && <Dieta plano={plano} checked={checkedHoje} onToggle={toggleCheck} onUpdatePlano={updatePlano} onImportar={() => setImportando(true)} />}
             {tab === 'compras'   && <Compras plano={plano} compras={compras} onToggle={toggleCompra} />}
             {tab === 'perfil'    && <Perfil plano={plano} userId={user.id} onPlanoAtualizado={handlePlanoAtualizado} onLogout={logout} onApagarTudo={handleApagarTudo} onVoltar={() => setTab('hoje')} />}
           </motion.div>
         </AnimatePresence>
       </div>
       <NavBar active={tab} onChange={setTab} onRegistrar={() => setRegistro(true)} />
+      {importando && <Importar plano={plano} onFechar={() => setImportando(false)}
+        onSalvar={(novo) => { updatePlano(novo); setImportando(false); setTab('plano') }} />}
       <RegistroRapido aberto={registro} onFechar={() => setRegistro(false)} plano={plano} checked={checkedHoje}
         onMarcarRefeicao={marcarRefeicao} onSalvarPeso={salvarPeso} />
     </div>

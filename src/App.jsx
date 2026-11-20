@@ -47,7 +47,7 @@ export default function App() {
   const [celebrar, setCelebrar] = useState(false)
   const [dadosCarregados, setDadosCarregados] = useState(false)
 
-  // Carrega tudo do Supabase assim que o usuário loga
+  // Carrega tudo do banco (Neon) assim que o usuário loga
   useEffect(() => {
     if (!user) { setPlano(null); setDadosCarregados(false); return }
     let ativo = true

@@ -5,12 +5,24 @@
   "installCommand": "npm install",
   "rewrites": [
     {
-      "source": "/site",
-      "destination": "/site/index.html"
+      "source": "/login",
+      "destination": "/app.html"
     },
     {
-      "source": "/((?!api/|site).*)",
-      "destination": "/index.html"
+      "source": "/app/:path*",
+      "destination": "/app.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/site",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/site/index.html",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }

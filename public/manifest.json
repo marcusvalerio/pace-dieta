@@ -4,30 +4,30 @@
   "description": "Seu plano alimentar, sua lista de compras e seu progresso, com ou sem nutricionista.",
   "start_url": "/login",
   "display": "standalone",
-  "background_color": "#F5F4F5",
+  "background_color": "#0B0B0C",
   "theme_color": "#F5F4F5",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon-escuro-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-escuro-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-escuro-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/lima.svg",
+      "src": "/icons/aura.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
